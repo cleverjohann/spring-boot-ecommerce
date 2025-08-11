@@ -24,7 +24,7 @@ public class AsyncConfig implements AsyncConfigurer {
      * Optimizado para operaciones como envío de emails y notificaciones.
      */
     @Bean(name = "taskExecutor")
-    public Executor getAsyncExecutor(ThreadPoolTaskExecutor threadPoolTaskExecutor) {
+    public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 
         // Configuracion del pool de hilos
