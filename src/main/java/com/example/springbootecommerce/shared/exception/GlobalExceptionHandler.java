@@ -90,7 +90,7 @@ public class GlobalExceptionHandler {
             BindException ex,
             WebRequest request
     ) {
-        log.warn("Bing error ocurred {}", ex.getMessage());
+        log.warn("Bind error occurred {}", ex.getMessage());
 
         List<ErrorResponse.ValidationError> validationErrors = ex.getBindingResult()
                 .getFieldErrors()

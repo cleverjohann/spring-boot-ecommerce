@@ -22,13 +22,13 @@ spring:
         default-page-size: 20
         max-page-size: 100
 
-# Configuraci�n de JWT
+# Configuración de JWT
 app:
   jwt:
     secret: ${JWT_SECRET:mySecretKey123456789012345678901234567890}
     expiration: ${JWT_EXPIRATION:86400000} # 24 hours in milliseconds
 
-# Configuraci�n de logging
+# Configuración de logging
 logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
@@ -38,7 +38,7 @@ logging:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
-# Configuraci�n de OpenAPI/Swagger
+# Configuración de OpenAPI/Swagger
 springdoc:
   api-docs:
     path: /api-docs
