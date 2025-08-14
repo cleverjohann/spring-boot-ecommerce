@@ -6,7 +6,6 @@ import com.example.springbootecommerce.user.dto.UserDTO;
 import com.example.springbootecommerce.user.entity.Address;
 import com.example.springbootecommerce.user.entity.Role;
 import com.example.springbootecommerce.user.entity.User;
-import jdk.jfr.Name;
 import org.mapstruct.*;
 
 import java.util.List;
@@ -35,12 +34,14 @@ public interface UserMapper {
     @Mapping(target = "roles", expression = "java(mapRolesToStrings(user.getRoles()))")
     @Mapping(target = "registrationDate", source = "createdAt")
     @Mapping(target = "lastUpdateDate", source = "updatedAt")
-    @Mapping(target = "defaultAddress", source = "java(findDefaultAddress(user.getAddresses()))")
+    @Mapping(target = "defaultAddress", expression = "java(findDefaultAddress(user.getAddresses()))")
+    @Named("toUserDTO")
     UserDTO toUserDTO(User user);
 
     /**
      * Convierte lista de Users a lista de UserDTOs
      */
+    @IterableMapping(qualifiedByName = "toUserDTO")
     List<UserDTO> toUserDTOs(List<User> users);
 
     /**
@@ -48,7 +49,7 @@ public interface UserMapper {
      */
     @Mapping(target = "fullName", expression = "java(user.getFullName())")
     @Mapping(target = "registrationDate", source = "createdAt")
-    @Mapping(target = "primaryRole", source = "java(getPrimaryRole(user.getRoles()))")
+    @Mapping(target = "primaryRole", expression = "java(getPrimaryRole(user.getRoles()))")
     @Mapping(target = "orderCount", ignore = true)
     UserDTO.UserSummaryDTO toUserSummaryDTO(User user);
 
@@ -142,17 +143,17 @@ public interface UserMapper {
      */
     @Named("adminView")
     @Mapping(target = "fullName", expression = "java(user.getFullName())")
-    @Mapping(target = "roles", expression = "java(mapRolesToStrings(user.getRoles))")
+    @Mapping(target = "roles", expression = "java(mapRolesToStrings(user.getRoles()))")
     @Mapping(target = "registrationDate", source = "createdAt")
     @Mapping(target = "lastUpdateDate", source = "updatedAt")
-    @Mapping(target = "defaultAddress", source = "java(findDefaultAddress(user.getAddresses()))")
-    @Mapping(target = "address", source = "addresses")
+    @Mapping(target = "defaultAddress", expression = "java(findDefaultAddress(user.getAddresses()))")
+    @Mapping(target = "addresses", source = "addresses")
     UserDTO toAdminUserDTO(User user);
 
     /**
      * Mapper para respuesta después de login (información básica + roles)
      */
-    @Name("loginResponse")
+    @Named("loginResponse")
     @Mapping(target = "fullName", expression = "java(user.getFullName())")
     @Mapping(target = "roles", expression = "java(mapRolesToStrings(user.getRoles()))")
     @Mapping(target = "registrationDate", source = "createdAt")

@@ -4,7 +4,6 @@ import com.example.springbootecommerce.shared.audit.Auditable;
 import com.example.springbootecommerce.shared.util.Constants;
 import jakarta.persistence.*;
 import lombok.*;
-import org.apache.commons.lang3.builder.EqualsExclude;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -29,16 +28,16 @@ public class Role extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
-    private Long id;
+    private Integer id;
 
-    @Column(name = "name", nullable = false,unique = true, length = 50)
+    @Column(name = "name", nullable = false, unique = true, length = 50)
     @EqualsAndHashCode.Include
     private String name;
 
     @Column(name = "description", length = 200)
     private String description;
 
-    @ManyToMany(mappedBy = "roles",fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
     @Builder.Default
     private Set<User> users = new HashSet<>();
 
@@ -46,22 +45,22 @@ public class Role extends Auditable {
     // MÉTODOS DE CONVENIENCIA
     // ========================================================================
 
-    public boolean isAdmin(){
+    public boolean isAdmin() {
         return Constants.ROLE_ADMIN.equals(name);
     }
 
-    public boolean isUser(){
+    public boolean isUser() {
         return Constants.ROLE_USER.equals(name);
     }
 
-    public static Role createUserRole(){
+    public static Role createUserRole() {
         return Role.builder()
                 .name(Constants.ROLE_USER)
                 .description("Usuario estándar con permisos básicos")
                 .build();
     }
 
-    public static Role createAdminRole(){
+    public static Role createAdminRole() {
         return Role.builder()
                 .name(Constants.ROLE_ADMIN)
                 .description("Administrador con acceso completo al sistema")
@@ -70,8 +69,8 @@ public class Role extends Auditable {
 
     @PrePersist
     @PreUpdate
-    private void prePersistUpdate(){
-        if(name != null && !name.startsWith("ROLE_")){
+    private void prePersistUpdate() {
+        if (name != null && !name.startsWith("ROLE_")) {
             throw new IllegalArgumentException("El nombre del rol debe empezar por ROLE_ prefix");
         }
     }

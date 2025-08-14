@@ -3,6 +3,7 @@ package com.example.springbootecommerce.user.entity;
 import com.example.springbootecommerce.shared.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @ToString(exclude = {"user"})
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 public class Address extends Auditable {

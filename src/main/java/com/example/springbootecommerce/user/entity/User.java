@@ -3,6 +3,7 @@ package com.example.springbootecommerce.user.entity;
 import com.example.springbootecommerce.shared.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,9 +22,9 @@ import java.util.*;
 })
 @Getter
 @Setter
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @ToString(exclude = {"passwordHash", "roles"})
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 public class User extends Auditable implements UserDetails {
