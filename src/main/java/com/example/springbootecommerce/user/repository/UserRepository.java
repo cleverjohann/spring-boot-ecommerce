@@ -40,7 +40,7 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     List<User> findUsersWithoutAddresses();
 
     @Query("SELECT u FROM User u WHERE u.createdAt >= :sinceDate ORDER BY u.createdAt DESC")
-    List<User> findRecentUsers(@Param("sinceDate")LocalDateTime sinceDate);
+    List<User> findRecentUsers(@Param("sinceDate") LocalDateTime sinceDate);
 
     @Query(value = """
         SELECT u.id as id,

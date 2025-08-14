@@ -71,7 +71,7 @@ public class Role extends Auditable {
     @PreUpdate
     private void prePersistUpdate() {
         if (name != null && !name.startsWith("ROLE_")) {
-            throw new IllegalArgumentException("El nombre del rol debe empezar por ROLE_ prefix");
+            throw new IllegalArgumentException("El nombre del rol debe empezar con el prefijo ROLE_");
         }
     }
 
