@@ -39,21 +39,21 @@ public class CreatedAddressDTO {
     @Schema(description = "Estado o provincia de la dirección", example = "Lima")
     @NotBlank(message = "El estado o provincia es obligatorio")
     @Size(min = 2, max = 100, message = "El estado o provincia debe tener entre 2 y 100 caracteres")
-    @Pattern(regexp = "^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\\\\s-]+$",
+    @Pattern(regexp = "^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\\s-]+$",
             message = "El estado o provincia solo puede contener letras, espacios y guiones")
     private String state;
 
     @Schema(description = "Código postal de la dirección", example = "15001")
     @NotBlank(message = "El código postal es obligatorio")
     @Size(min = 4, max = 20, message = "El código postal debe tener entre 4 y 20 caracteres")
-    @Pattern(regexp = "^[0-9A-Za-z\\\\s-]+$",
+    @Pattern(regexp = "^[0-9A-Za-z\\s-]+$",
             message = "El código postal solo puede contener letras, números, espacios y guiones")
     private String postalCode;
 
     @Schema(description = "País de la dirección", example = "Perú")
     @NotBlank(message = "El país es obligatorio")
     @Size(min = 2, max = 100, message = "El país debe tener entre 2 y 100 caracteres")
-    @Pattern(regexp = "^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\\\\s-]+$",
+    @Pattern(regexp = "^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\\s-]+$",
             message = "El país solo puede contener letras, espacios y guiones")
     private String country;
 

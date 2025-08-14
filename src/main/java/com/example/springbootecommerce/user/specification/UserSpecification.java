@@ -26,6 +26,6 @@ public class UserSpecification {
 
     public static Specification<User> registeredBetween(LocalDateTime start, LocalDateTime end){
         return (root, query, cb) ->
-                cb.between(root.get("createAt"), start, end);
+                cb.between(root.get("createdAt"), start, end);
     }
 }
