@@ -30,7 +30,7 @@ public class AddressDTO {
     private String street;
 
     @Schema(description = "Número de apartamento o unidad", example = "Apt. 1B")
-    @Size(max = 50, message = "El número de apartamento no puede exceder")
+    @Size(max = 50, message = "El número de apartamento no puede exceder los 50 caracteres")
     private String apartmentNumber;
 
     @Schema(description = "Ciudad de la dirección", example = "Lima")

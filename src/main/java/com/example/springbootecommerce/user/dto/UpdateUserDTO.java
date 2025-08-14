@@ -21,13 +21,13 @@ import lombok.NoArgsConstructor;
 public class UpdateUserDTO {
     @Schema(description = "Nombre del usuario", example = "Juan Carlos")
     @Size(min = 2, max = 100,message = "El nombre debe tener entre 2 y 100 caracteres")
-    @Pattern(regexp = "^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\\\\s-]+$",
+    @Pattern(regexp = "^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\\s-]+$",
             message = "El nombre solo puede contener letras, espacios y guiones")
     private  String firstName;
 
     @Schema(description = "Apellido del usuario", example = "Pérez Gonzales")
     @Size(min = 2, max = 100,message = "El apellido debe tener entre 2 y 100 caracteres")
-    @Pattern(regexp = "^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\\\\s-]+$",
+    @Pattern(regexp = "^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\\s-]+$",
             message = "El apellido solo puede contener letras, espacios y guiones")
     private String lastName;
 

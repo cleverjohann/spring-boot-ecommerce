@@ -72,9 +72,9 @@ public class Address extends Auditable {
     public String getFullAddress(){
         return street +
                 ", " + city +
-                "; " + state +
-                "; " + postalCode +
-                "; " + country;
+                ", " + state +
+                ", " + postalCode +
+                ", " + country;
     }
 
     public boolean isDefaultAddress(){

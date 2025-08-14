@@ -32,7 +32,7 @@ public class CreatedAddressDTO {
     @Schema(description = "Ciudad de la dirección", example = "Lima")
     @NotBlank(message = "La ciudad es obligatoria")
     @Size(min = 2, max = 100, message = "La ciudad debe tener entre 2 y 100 caracteres")
-    @Pattern(regexp = "^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\\\\s-]+$",
+    @Pattern(regexp = "^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\\s-]+$",
             message = "La ciudad solo puede contener letras, espacios y guiones")
     private String city;
 
@@ -63,7 +63,7 @@ public class CreatedAddressDTO {
 
     @Schema(description = "Número de teléfono asociado a la dirección", example = "+51 987654321")
     @Size(max = 20, message = "El número de teléfono no puede exceder los 20 caracteres")
-    @Pattern(regexp = "^[+]?[0-9\\\\s()-]{7,20}$",
+    @Pattern(regexp = "^[+]?[0-9\\s()-]{7,20}$",
             message = "El número de teléfono debe ser un número válido con formato internacional opcional")
     private String phoneNumber;
 
