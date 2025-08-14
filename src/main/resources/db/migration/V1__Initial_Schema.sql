@@ -63,6 +63,12 @@ CREATE TABLE addresses (
                            updated_by VARCHAR(100),
                            updated_at TIMESTAMP
 );
+-- Agregar columnas opcionales a la tabla addresses
+ALTER TABLE addresses
+    ADD COLUMN apartment_number VARCHAR(50),
+    ADD COLUMN company VARCHAR(100),
+    ADD COLUMN phone VARCHAR(20),
+    ADD COLUMN additional_info VARCHAR(500);
 
 -- ==============================================================================
 -- TABLA: categories

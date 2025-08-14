@@ -4,6 +4,8 @@ import com.example.springbootecommerce.shared.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 /**
  * Entidad que representa las direcciones de los usuarios.
  * Almacena información de direcciones de facturación y envío.
@@ -48,6 +50,19 @@ public class Address extends Auditable {
     @Column(name = "is_default",nullable = false)
     @Builder.Default
     private Boolean isDefault = false;
+
+    //Campos adicionales opcionales
+    @Column(name = "apartment_number", length = 50)
+    private String apartmentNumber;
+
+    @Column(name = "company", length = 100)
+    private String company;
+
+    @Column(name = "phone", length = 20)
+    private String phoneNumber;
+
+    @Column(name = "additional_info", length = 500)
+    private String additionalInfo;
 
     // ========================================================================
     // MÉTODOS DE CONVENIENCIA
@@ -108,7 +123,5 @@ public class Address extends Auditable {
                     .forEach(address -> address.setIsDefault(false));
         }
     }
-
-
 
 }
