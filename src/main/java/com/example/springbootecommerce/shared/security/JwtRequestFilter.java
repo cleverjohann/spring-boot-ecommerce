@@ -2,7 +2,6 @@ package com.example.springbootecommerce.shared.security;
 
 import com.example.springbootecommerce.shared.util.Constants;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.servlet.FilterChain;
@@ -69,6 +68,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
             if (jwt.isEmpty()) {
                 log.debug("Token JWT vacío en el header");
+                filterChain.doFilter(request, response);
                 return;
             }
 

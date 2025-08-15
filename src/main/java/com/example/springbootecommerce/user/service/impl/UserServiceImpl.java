@@ -159,7 +159,7 @@ public class UserServiceImpl implements UserService {
 
         // Validar nueva contraseña
         if (newPassword.length() < 8) {
-            throw new BusinessException("La nueva contraseña debe tener al menos de 8 caracteres ");
+            throw new BusinessException("La nueva contraseña debe tener al menos 8 caracteres ");
         }
 
         // Verificar que la nueva contraseña sea diferente
@@ -223,7 +223,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // Verificamos si el usuario puede ser desactivado
-        validateUserCanBeDeactivated(currentUser);
+        validateUserCanBeDeactivated(user);
 
         user.setIsActive(false);
         User savedUser = userRepository.save(user);
@@ -408,7 +408,7 @@ public class UserServiceImpl implements UserService {
         //Sí era la dirección por defecto, establecer otra como por defecto
         if (address.getIsDefault()) {
             Address newDefaultAddress = currentUser.getAddresses().stream()
-                    .filter(addr -> !addr.getId().equals(addressId) && addr.getIsDefault())
+                    .filter(addr -> !addr.getId().equals(addressId))
                     .findFirst()
                     .orElseThrow(() -> new BusinessException("No hay otra dirección por defecto disponible"));
 
@@ -531,7 +531,7 @@ public class UserServiceImpl implements UserService {
         if (currentPassword == null || currentPassword.trim().isEmpty()) {
             throw new BusinessException("Se requiere la contraseña actual para este cambio");
         }
-        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+        if (!passwordEncoder.matches(currentPassword, user.getPasswordHash())) {
             throw new BusinessException("La contraseña actual es incorrecta");
         }
     }

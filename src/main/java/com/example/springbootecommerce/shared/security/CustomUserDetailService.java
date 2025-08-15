@@ -144,7 +144,7 @@ public class CustomUserDetailService implements UserDetailsService {
             // Nota: En una implementación real, aquí se compararía con PasswordEncoder
             // Por ahora solo verificamos que el usuario existe
             return user != null && user.isEnabled() &&
-                    passwordEncoder.matches(password,user.getPassword());
+                    passwordEncoder.matches(password,user.getPasswordHash());
         } catch (UsernameNotFoundException e) {
             return false;
         }
