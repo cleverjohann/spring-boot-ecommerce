@@ -85,7 +85,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
                 processTokenAuthentication(request,jwt, userEmail);
             }else {
-                log.trace("Usuario no autenticado en el contexto de seguridad");
+                log.trace("Usuario ya autenticado en el contexto de seguridad");
             }
         }catch (ExpiredJwtException e){
             log.debug("Token JWT expirado para request: {} {}",request.getMethod(),request.getRequestURI());
@@ -209,7 +209,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                         path.startsWith("/actuator/health");
 
         if (isPublicEndpoint && log.isDebugEnabled()) {
-            log.trace("Saltando la validacion de JWT para endpoints público: {} {}",method,path);
+            log.trace("Saltando la validation de JWT para endpoints público: {} {}",method,path);
         }
         return isPublicEndpoint;
     }

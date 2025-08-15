@@ -35,7 +35,7 @@ public class CustomUserDetailService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        log.info("Cargando usuario por email: {}", email);
+        log.debug("Cargando usuario por email: {}", email);
 
         if (email == null || email.trim().isEmpty()) {
             log.warn("Intento de authentication con email nulo o vacío");
@@ -53,7 +53,7 @@ public class CustomUserDetailService implements UserDetailsService {
 
         // Verificar que el usuario tenga al menos un rol
         if (user.getRoles().isEmpty()) {
-            log.warn("Usuario no encontrado o inactivo: {}", email);
+            log.warn("Usuario sin roles asignados: {}", email);
             throw new UsernameNotFoundException("Usuario no encontrado o inactivo: " + email);
         }
 
@@ -127,7 +127,7 @@ public class CustomUserDetailService implements UserDetailsService {
     }
 
     /**
-     * Valida las credenciales del usuario de manera explícita.
+     * Válida las credenciales del usuario de manera explícita.
      * Útil para validaciones adicionales de seguridad.
      *
      * @param email Email del usuario

@@ -31,7 +31,7 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 
     long countByIsActiveTrue();
 
-    long countByRoleName(String roleName);
+    long countByRoles_Name(String roleName);
 
     @Query("SELECT u FROM User u WHERE SIZE(u.roles) > 1")
     List<User> findUsersWithMultipleRoles();

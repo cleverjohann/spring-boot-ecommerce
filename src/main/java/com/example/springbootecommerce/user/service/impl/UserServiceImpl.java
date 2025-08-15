@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDTO updateCurrentUserProfile(UpdateUserDTO updateUserDTO) {
-        log.info("Actualizando perfil del proceso actual");
+        log.info("Actualizando perfil del usuario actual");
 
         // Validaciones preliminares
         if (!updateUserDTO.hasUpdates()) {
@@ -143,7 +143,7 @@ public class UserServiceImpl implements UserService {
         currentUser.setIsActive(false);
         userRepository.save(currentUser);
 
-        log.info("Usuario desactivando exitosamente : {}", currentUser.getEmail());
+        log.info("Usuario desactivado exitosamente : {}", currentUser.getEmail());
         return true;
     }
 
@@ -155,11 +155,11 @@ public class UserServiceImpl implements UserService {
         User currentUser = getCurrentUserEntity();
 
         // Validar contraseña actual
-        validateCurrentPassword(currentUser, newPassword);
+        validateCurrentPassword(currentUser, currentPassword);
 
         // Validar nueva contraseña
         if (newPassword.length() < 8) {
-            throw new BusinessException("La nueva contraseña debe tener menos de 8 caracteres ");
+            throw new BusinessException("La nueva contraseña debe tener al menos de 8 caracteres ");
         }
 
         // Verificar que la nueva contraseña sea diferente
@@ -193,7 +193,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDTO activateUser(Long userId) {
-        log.info("Actualizando usuario por ID: {}", userId);
+        log.info("Activando usuario por ID: {}", userId);
 
         // Verificar permisos de administrador
         verifyAdminPermissions();
@@ -309,7 +309,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public AddressDTO updateCurrentUserAddress(Long addressId, CreatedAddressDTO updatedAddressDTO) {
-        log.info("Actualizando usuario por ID: {}", addressId);
+        log.info("Actualizando direction de usuario por ID: {}", addressId);
 
         // Validar y normalizar datos
         updatedAddressDTO.normalize();
@@ -499,8 +499,8 @@ public class UserServiceImpl implements UserService {
         long totalUsers = userRepository.count();
         long activeUsers = userRepository.countByIsActiveTrue();
         long inactiveUsers = totalUsers - activeUsers;
-        long adminUsers = userRepository.countByRoleName(Constants.ROLE_ADMIN);
-        long regularUsers = userRepository.countByRoleName(Constants.ROLE_USER);
+        long adminUsers = userRepository.countByRoles_Name(Constants.ROLE_ADMIN);
+        long regularUsers = userRepository.countByRoles_Name(Constants.ROLE_USER);
 
         List<User> usersWithMultipleRoles = userRepository.findUsersWithMultipleRoles();
         long usersWithMultipleRolesCount = usersWithMultipleRoles.size();
@@ -544,7 +544,7 @@ public class UserServiceImpl implements UserService {
 
     private void validateUserCanBeDeactivated(User user) {
         if (user.hasRole(Constants.ROLE_ADMIN)) {
-            long adminCount = userRepository.countByRoleName(Constants.ROLE_ADMIN);
+            long adminCount = userRepository.countByRoles_Name(Constants.ROLE_ADMIN);
             if (adminCount <= 1) {
                 throw new BusinessException("No se puede desactivar el único administrador del sistema");
             }
