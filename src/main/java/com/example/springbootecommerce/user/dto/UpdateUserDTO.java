@@ -148,22 +148,23 @@ public class UpdateUserDTO {
     /**
      * Obtiene un resumen de los cambios para logging
      */
-    public String getChangeSummary() {
-        StringBuilder summary = new StringBuilder("Actualización de usuario: ");
+    public String getUpdateSummary() {
+        StringBuilder summary = new StringBuilder("Actualizaciones: ");
+
         if (firstName != null && !firstName.trim().isEmpty()) {
-            summary.append("Nombre: ").append(firstName).append(", ");
+            summary.append("nombre, ");
         }
         if (lastName != null && !lastName.trim().isEmpty()) {
-            summary.append("Apellido: ").append(lastName).append(", ");
+            summary.append("apellido, ");
         }
         if (isChangingEmail()) {
-            summary.append("Email: ").append(email).append(", ");
+            summary.append("email, ");
         }
         if (isChangingPassword()) {
-            summary.append("Contraseña: [cambiada], ");
+            summary.append("contraseña, ");
         }
-        String result = summary.toString();
 
+        String result = summary.toString();
         return result.endsWith(", ") ? result.substring(0, result.length() - 2) : result;
     }
 
