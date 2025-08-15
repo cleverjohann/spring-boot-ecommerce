@@ -1,33 +1,34 @@
 package com.example.springbootecommerce.shared.exception;
 
-import lombok.Getter;
-
 /**
- * Excepción base para errores de lógica de negocio.
- * Extiende RuntimeException para no requerir manejo explícito.
+ * Excepción para errores de lógica de negocio.
+ * Se usa cuando se violan reglas de negocio o cuando hay errores esperados en el flujo.
  */
-@Getter
 public class BusinessException extends RuntimeException {
 
     private final String errorCode;
 
-    public BusinessException(String message){
+    public BusinessException(String message) {
         super(message);
         this.errorCode = "BUSINESS_ERROR";
     }
 
-    public BusinessException(String message, String errorCode){
+    public BusinessException(String message, String errorCode) {
         super(message);
         this.errorCode = errorCode;
     }
 
-    public BusinessException(String message, Throwable cause){
-        super(message,cause);
+    public BusinessException(String message, Throwable cause) {
+        super(message, cause);
         this.errorCode = "BUSINESS_ERROR";
     }
 
-    public BusinessException(String message, String errorCode, Throwable cause){
-        super(message,cause);
+    public BusinessException(String message, String errorCode, Throwable cause) {
+        super(message, cause);
         this.errorCode = errorCode;
+    }
+
+    public String getErrorCode() {
+        return errorCode;
     }
 }

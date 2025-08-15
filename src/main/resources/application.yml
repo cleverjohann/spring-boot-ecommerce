@@ -25,8 +25,10 @@ spring:
 # Configuración de JWT
 app:
   jwt:
-    secret: ${JWT_SECRET:mySecretKey123456789012345678901234567890}
+    secret: ${JWT_SECRET:dGhpc0lzQVNlY3VyZVNlY3JldEtleUZvckpXVFRva2VuRW5jcnlwdGlvbjEyMzQ1Ng==}
     expiration: ${JWT_EXPIRATION:86400000} # 24 hours in milliseconds
+  default:
+    role: ROLE_USER
 
 # Configuración de logging
 logging:

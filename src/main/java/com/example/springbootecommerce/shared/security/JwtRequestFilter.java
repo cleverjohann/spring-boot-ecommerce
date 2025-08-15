@@ -24,7 +24,10 @@ import java.io.IOException;
 /**
  * Filtro personalizado para interceptar requests HTTP y validar tokens JWT.
  * Se ejecuta una vez por request y establece el contexto de seguridad si el token es válido.
- * Extiende OncePerRequestFilter para garantizar una sola ejecución por request.
+ *
+ * @author Sistema de Seguridad
+ * @version 1.2
+ * @since 1.0
  */
 @Slf4j
 @Component
@@ -32,154 +35,125 @@ import java.io.IOException;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-    private final CustomUserDetailService customUserDetailService;
     private final UserDetailsService userDetailsService;
 
     /**
      * Función principal del filtro que procesa cada request HTTP.
-     *
-     * @param request Request HTTP
-     * @param response Response HTTP
-     * @param filterChain Cadena de filtros
      */
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
-        // Log del request entrante (solo para debugging en desarrollo)
 
-        if (log.isTraceEnabled()){
+        if (log.isTraceEnabled()) {
             log.trace("Procesando request {} {}", request.getMethod(), request.getRequestURI());
         }
 
-        // Extraer el header de authorization
         final String authHeader = request.getHeader(Constants.AUTHORIZATION_HEADER);
 
-        // Si no hay header en authorization o no empieza con "Bearer", continuar sin autenticar
         if (authHeader == null || !authHeader.startsWith(Constants.BEARER_TOKEN_PREFIX)) {
-            log.trace("No se encontró el token JWT en el header de authorization");
+            log.trace("No se encontró token JWT válido en el header");
             filterChain.doFilter(request, response);
             return;
         }
 
         try {
-            // Extraer el token de JWT (remover el prefijo "Bearer ")
             final String jwt = authHeader.substring(Constants.BEARER_TOKEN_PREFIX.length()).trim();
 
             if (jwt.isEmpty()) {
-                log.debug("Token JWT vacío en el header");
+                log.debug("Token JWT vacío");
                 filterChain.doFilter(request, response);
                 return;
             }
 
-            // Extraer el username del token
             final String userEmail = jwtService.extractUsername(jwt);
 
             if (userEmail == null) {
-                log.debug("No se pudo extraer el username del token JWT");
+                log.debug("No se pudo extraer username del token");
                 filterChain.doFilter(request, response);
                 return;
             }
 
-            // Si el usuario no está authenticate en el contexto de seguridad actual
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
-                processTokenAuthentication(request,jwt, userEmail);
-            }else {
-                log.trace("Usuario ya autenticado en el contexto de seguridad");
+                processTokenAuthentication(request, jwt, userEmail);
             }
-        }catch (ExpiredJwtException e){
-            log.debug("Token JWT expirado para request: {} {}",request.getMethod(),request.getRequestURI());
+
+            if (log.isDebugEnabled()) {
+                logTokenInformation(jwt);
+            }
+
+        } catch (ExpiredJwtException e) {
+            log.debug("Token JWT expirado: {} {}", request.getMethod(), request.getRequestURI());
             handleJwtException(response, "Token expirado", HttpServletResponse.SC_UNAUTHORIZED);
             return;
-        }catch (UnsupportedJwtException e){
+        } catch (UnsupportedJwtException e) {
             log.warn("Token JWT no soportado: {}", e.getMessage());
             handleJwtException(response, "Token no soportado", HttpServletResponse.SC_BAD_REQUEST);
             return;
-        }catch (MalformedJwtException e){
+        } catch (MalformedJwtException e) {
             log.warn("Token JWT malformado: {}", e.getMessage());
-            handleJwtException(response, "Token JWT malformado", HttpServletResponse.SC_BAD_REQUEST);
+            handleJwtException(response, "Token malformado", HttpServletResponse.SC_BAD_REQUEST);
             return;
-        }catch (SecurityException e){
-            log.warn("Falla de seguridad en el token JWT: {}", e.getMessage());
-            handleJwtException(response, "Token invalido", HttpServletResponse.SC_UNAUTHORIZED);
+        } catch (SecurityException e) {
+            log.warn("Error de seguridad en token: {}", e.getMessage());
+            handleJwtException(response, "Token inválido", HttpServletResponse.SC_UNAUTHORIZED);
             return;
-        }catch (IllegalArgumentException e){
-            log.warn("Token JWT invalido: {}", e.getMessage());
-            handleJwtException(response, "Token JWT invalido", HttpServletResponse.SC_BAD_REQUEST);
+        } catch (IllegalArgumentException e) {
+            log.warn("Token JWT inválido: {}", e.getMessage());
+            handleJwtException(response, "Token JWT inválido", HttpServletResponse.SC_BAD_REQUEST);
             return;
-        }catch (Exception e){
-            log.error("Error inesperado procesando token JWT: {}", e.getMessage());
-            handleJwtException(response, "Error interno procesando el token", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            log.error("Error inesperado procesando JWT: {}", e.getMessage(), e);
+            handleJwtException(response, "Error interno", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return;
         }
 
-        //Continuar con la cadena de filtros
         filterChain.doFilter(request, response);
     }
 
     /**
-     * Procesa la autenticación del token JWT
-     *
-     * @param request Request HTTP
-     * @param jwt Token JWT
-     * @param userEmail Email del usuario extraído del token
+     * Procesa la autenticación del token JWT.
      */
-    private void processTokenAuthentication(HttpServletRequest request,@NonNull String jwt,@NonNull String userEmail){
+    private void processTokenAuthentication(HttpServletRequest request,
+                                            @NonNull String jwt,
+                                            @NonNull String userEmail) {
         try {
-            // Cargar los detalles del usuario
             UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
 
-            // Validar el token
             if (jwtService.isTokenValid(jwt, userDetails)) {
-                // Crear el token de autenticación
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
+                        userDetails, null, userDetails.getAuthorities());
 
-                // Establecer detalles adicional al request
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                // Establecer la authentication en el contexto de seguridad
                 SecurityContextHolder.getContext().setAuthentication(authToken);
 
-                log.debug("Usuario autenticado exitosamente : {} con roles {}", userEmail, userDetails.getAuthorities());
-            }else {
-                log.debug("Token JWT invalido para usuario: {} ", userEmail);
+                log.debug("Usuario autenticado: {} con roles {}", userEmail, userDetails.getAuthorities());
+            } else {
+                log.debug("Token JWT inválido para: {}", userEmail);
             }
-        }catch (Exception e){
-            log.warn("Error cargando detalles de usuario {}:{}",userEmail,e.getMessage());
+        } catch (Exception e) {
+            log.warn("Error cargando detalles de usuario {}: {}", userEmail, e.getMessage());
         }
     }
+
     /**
-     * Maneja excepciones de JWT enviando respuesta de error apropiada
-     *
-     * @param response Response HTTP
-     * @param message Mensaje de error
-     * @param status Código de estado HTTP
+     * Maneja excepciones de JWT.
      */
-    private void handleJwtException(HttpServletResponse response, String message, int status) throws IOException{
+    private void handleJwtException(HttpServletResponse response, String message, int status) throws IOException {
         response.setStatus(status);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 
         String jsonResponse = String.format(
                 "{\"success\":false,\"error\":\"%s\",\"message\":\"%s\",\"timestamp\":\"%s\"}",
-                getErrorCode(status),
-                message,
-                java.time.LocalDateTime.now()
+                getErrorCode(status), message, java.time.LocalDateTime.now()
         );
 
         response.getWriter().write(jsonResponse);
         response.getWriter().flush();
-
-        log.debug("Enviada respuesta de error JWT: {} - {}", status, message);
     }
 
-    /**
-     * Obtiene el código de error basado en el status HTTP
-     */
     private String getErrorCode(int status) {
         return switch (status) {
             case HttpServletResponse.SC_UNAUTHORIZED -> "UNAUTHORIZED";
@@ -190,81 +164,100 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     }
 
     /**
-     * Determina si el filtro debe ser aplicado a este request.
-     * Se puede override para excluir ciertos paths de la validación JWT.
+     * Determina si el filtro debe saltarse para este request.
+     * Lista completa de endpoints públicos incluyendo Swagger/OpenAPI.
      */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
         String method = request.getMethod();
 
-        // No filtrar endpoints públicos
-        boolean isPublicEndpoint =
-                path.startsWith("/api/v1/auth/") ||
-                        path.startsWith("/api/v1/products") && "GET".equals(method) ||
-                        path.startsWith("/swagger-ui") ||
-                        path.startsWith("/v3/api-docs") ||
-                        path.startsWith("/api-docs") ||
-                        path.equals("/") ||
-                        path.startsWith("/actuator/health");
+        // Lista completa de paths públicos
+        String[] publicPaths = {
+                // Autenticación
+                "/api/v1/auth/",
 
-        if (isPublicEndpoint && log.isDebugEnabled()) {
-            log.trace("Saltando la validation de JWT para endpoints público: {} {}",method,path);
-        }
-        return isPublicEndpoint;
-    }
+                // Documentación API (Swagger/OpenAPI) - TODOS los paths relacionados
+                "/swagger-ui",
+                "/swagger-ui/",
+                "/swagger-ui.html",
+                "/swagger-resources",
+                "/swagger-resources/",
+                "/v3/api-docs",
+                "/v3/api-docs/",
+                "/api-docs",
+                "/api-docs/",
+                "/webjars/",
 
-    /**
-     * Extrae información adicional del token para logging/auditoría
-     */
-    private void logTokenInformation(String jwt) {
-        if (log.isDebugEnabled()) {
-            try {
-                Long userId = jwtService.extractUserId(jwt);
-                String roles = jwtService.extractRoles(jwt);
-                long remainingTime = jwtService.getTokenRemainingTime(jwt);
+                // Actuator
+                "/actuator/health",
+                "/actuator/health/",
 
-                log.debug("Token info - UserId: {}, Roles: {}, Remaining time: {}ms",
-                        userId, roles, remainingTime);
+                // Recursos estáticos
+                "/favicon.ico",
+                "/error",
+                "/css/",
+                "/js/",
+                "/images/",
+                "/static/",
 
-                // Advertir si el token expira pronto (menos de 5 minutos)
-                if (remainingTime > 0 && remainingTime < 300000) { // 5 minutos
-                    log.debug("Token expirará pronto en {}ms", remainingTime);
+                // Root
+                "/"
+        };
+
+        // Verificar si el path coincide con algún path público
+        for (String publicPath : publicPaths) {
+            if (path.startsWith(publicPath)) {
+                if (log.isTraceEnabled()) {
+                    log.trace("Saltando JWT para endpoint público: {} {}", method, path);
                 }
-
-            } catch (Exception e) {
-                log.debug("No se pudo extraer información adicional del token: {}", e.getMessage());
+                return true;
             }
         }
+
+        // Productos públicos (solo GET)
+        if (path.startsWith("/api/v1/products") && "GET".equals(method)) {
+            if (log.isTraceEnabled()) {
+                log.trace("Saltando JWT para producto público: {} {}", method, path);
+            }
+            return true;
+        }
+
+        // Categorías públicas (solo GET)
+        if (path.startsWith("/api/v1/categories") && "GET".equals(method)) {
+            if (log.isTraceEnabled()) {
+                log.trace("Saltando JWT para categoría pública: {} {}", method, path);
+            }
+            return true;
+        }
+
+        // Reviews públicas (solo GET para ver reviews)
+        if (path.startsWith("/api/v1/reviews/product/") && "GET".equals(method)) {
+            if (log.isTraceEnabled()) {
+                log.trace("Saltando JWT para reviews públicas: {} {}", method, path);
+            }
+            return true;
+        }
+
+        return false;
     }
 
     /**
-     * Método de utilidad para logging de requests (solo en modo debug)
+     * Log información adicional del token.
      */
-    private void logRequestDetails(HttpServletRequest request) {
-        if (log.isDebugEnabled()) {
-            log.debug("Request details - Method: {}, URI: {}, Remote Address: {}, User Agent: {}",
-                    request.getMethod(),
-                    request.getRequestURI(),
-                    getClientIpAddress(request),
-                    request.getHeader("User-Agent"));
-        }
-    }
+    private void logTokenInformation(String jwt) {
+        try {
+            Long userId = jwtService.extractUserId(jwt);
+            String roles = jwtService.extractRoles(jwt);
+            long remainingTime = jwtService.getTokenRemainingTime(jwt);
 
-    /**
-     * Obtiene la dirección IP real del cliente considerando proxies y load balancers
-     */
-    private String getClientIpAddress(HttpServletRequest request) {
-        String xForwardedFor = request.getHeader("X-Forwarded-For");
-        if (xForwardedFor != null && !xForwardedFor.isEmpty()) {
-            return xForwardedFor.split(",")[0].trim();
-        }
+            log.debug("Token - UserId: {}, Roles: {}, Remaining: {}ms", userId, roles, remainingTime);
 
-        String xRealIp = request.getHeader("X-Real-IP");
-        if (xRealIp != null && !xRealIp.isEmpty()) {
-            return xRealIp;
+            if (remainingTime > 0 && remainingTime < 300000) {
+                log.warn("Token expira pronto: {}ms para usuario: {}", remainingTime, userId);
+            }
+        } catch (Exception e) {
+            log.debug("No se pudo extraer info adicional del token: {}", e.getMessage());
         }
-
-        return request.getRemoteAddr();
     }
 }
