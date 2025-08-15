@@ -299,6 +299,11 @@ public class UserServiceImpl implements UserService {
                 .findFirst()
                 .orElseThrow(()-> new BusinessException("Error al guardar la dirección"));
 
+        // Usar directamente la nueva dirección, que ahora tiene su ID asignado
+        if (newAddress.getId() == null) {
+            throw new BusinessException("Error al guardar la dirección");
+        }
+
         AddressDTO result = addressMapper.toAddressDTO(savedAddress);
 
         log.info("Dirección añadida exitosamente para usuario: {} - ID: {}",
