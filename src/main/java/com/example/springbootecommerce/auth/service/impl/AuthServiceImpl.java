@@ -9,6 +9,7 @@ import com.example.springbootecommerce.user.entity.User;
 import com.example.springbootecommerce.user.mapper.UserMapper;
 import com.example.springbootecommerce.user.repository.RoleRepository;
 import com.example.springbootecommerce.user.repository.UserRepository;
+import com.example.springbootecommerce.user.util.RoleUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -124,8 +125,7 @@ public class AuthServiceImpl implements AuthService {
 
         try {
             // Buscar el rol por defecto - AÑADIR PREFIJO ROLE_ si es necesario
-            String roleName = defaultRoleName.startsWith("ROLE_") ? defaultRoleName : "ROLE_" + defaultRoleName;
-
+            String roleName = RoleUtils.withPrefix(defaultRoleName);
             Role defaultRole = roleRepository.findByName(roleName)
                     .orElseThrow(() -> {
                         log.error("Rol por defecto no encontrado: {} (buscando como: {})", defaultRoleName, roleName);

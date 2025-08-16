@@ -251,7 +251,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setHeader("X-Auth-Error-Code", errorInfo.getErrorCode());
 
         // CORS headers básicos para permitir lectura del error
-        response.setHeader("Access-Control-Allow-Origin", "*");
+
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
     }
 

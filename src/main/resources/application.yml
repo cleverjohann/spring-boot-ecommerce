@@ -47,3 +47,8 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     operationsSorter: method
+
+# Configuración de Spring Security
+security:
+  password:
+    strength: 10

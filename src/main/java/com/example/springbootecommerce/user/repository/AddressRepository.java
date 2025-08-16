@@ -1,6 +1,8 @@
 package com.example.springbootecommerce.user.repository;
 
 import com.example.springbootecommerce.user.entity.Address;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -160,7 +162,7 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
      */
     @Query("SELECT a.country as country, COUNT(a) as count " +
             "FROM Address a GROUP BY a.country ORDER BY COUNT(a) DESC")
-    List<CountryStatistics> getAddressStatisticsByCountry();
+    Page<CountryStatistics> getAddressStatisticsByCountry(Pageable pageable);
 
     /**
      * Obtiene estadísticas de direcciones por ciudad

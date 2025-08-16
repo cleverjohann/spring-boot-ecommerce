@@ -35,7 +35,7 @@ import java.io.IOException;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-    private final UserDetailsService userDetailsService;
+    private final CustomUserDetailService userDetailsService;
 
     /**
      * Función principal del filtro que procesa cada request HTTP.

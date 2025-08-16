@@ -1,5 +1,6 @@
 package com.example.springbootecommerce.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,6 +16,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  */
 @Configuration
 public class PasswordEncoderConfig {
+    /**
+      * Valor configurable para la fuerza de BCrypt.
+      * Se puede establecer en application.properties como:
+      * spring.security.password.strength=10
+     */
+    @Value("${security.password.strength:10}")
+    private int strength;
 
     /**
      * Bean para el codificador de contraseñas usando BCrypt.
@@ -24,6 +32,7 @@ public class PasswordEncoderConfig {
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12);
+        return new BCryptPasswordEncoder(strength);
     }
+
 }
