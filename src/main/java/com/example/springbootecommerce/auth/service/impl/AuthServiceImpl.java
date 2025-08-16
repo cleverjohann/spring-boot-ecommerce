@@ -301,8 +301,21 @@ public class AuthServiceImpl implements AuthService {
                 throw new BusinessException("Las contraseñas nuevas no coinciden", "CHANGE_PWD_MISMATCH");
             }
 
-            // TODO: Obtener usuario actual desde SecurityContext
-            log.info("Cambio de contraseña procesado exitosamente");
+            // Obtener usuario actual desde SecurityContext
+            String currentUserEmail = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
+            User user = userRepository.findByEmailAndIsActiveTrue(currentUserEmail)
+                    .orElseThrow(() -> new BusinessException("Usuario no encontrado o inactivo", "USER_NOT_FOUND"));
+
+            // Verificar la contraseña actual
+            if (!passwordEncoder.matches(changePasswordDTO.getCurrentPassword(), user.getPasswordHash())) {
+                throw new BusinessException("La contraseña actual es incorrecta", "CHANGE_PWD_INVALID_OLD");
+            }
+
+            // Actualizar la contraseña
+            user.setPasswordHash(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
+            userRepository.save(user);
+
+            log.info("Cambio de contraseña procesado exitosamente para el usuario: {}", currentUserEmail);
             return true;
 
         } catch (BusinessException e) {
