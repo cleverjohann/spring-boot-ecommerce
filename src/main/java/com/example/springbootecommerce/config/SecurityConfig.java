@@ -76,7 +76,14 @@ public class SecurityConfig {
                 // Configurar autorización de endpoints
                 .authorizeHttpRequests(authz -> authz
                         // Endpoints públicos (no requieren autenticación)
-                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers(
+                                "/api/v1/auth/login",
+                                "/api/v1/auth/register",
+                                "/api/v1/auth/refresh",
+                                "/api/v1/auth/forgot-password",
+                                "/api/v1/auth/reset-password",
+                                "/api/v1/auth/check-email"
+                        ).permitAll()
                         .requestMatchers("/api/v1/public/**").permitAll()
 
                         // Documentación de API (Swagger/OpenAPI)

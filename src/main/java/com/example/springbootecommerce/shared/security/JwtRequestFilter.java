@@ -172,12 +172,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         String method = request.getMethod();
 
-        // Lista completa de paths públicos
+        // Lista de paths públicos que NO requieren JWT
         String[] publicPaths = {
-                // Autenticación
-                "/api/v1/auth/",
+                // Autenticación pública (login, register, etc.)
+                "/api/v1/auth/login",
+                "/api/v1/auth/register",
+                "/api/v1/auth/refresh",
+                "/api/v1/auth/forgot-password",
+                "/api/v1/auth/reset-password",
+                "/api/v1/auth/check-email",
 
-                // Documentación API (Swagger/OpenAPI) - TODOS los paths relacionados
+                // Documentación API (Swagger/OpenAPI)
                 "/swagger-ui",
                 "/swagger-ui/",
                 "/swagger-ui.html",
@@ -189,25 +194,20 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 "/api-docs/",
                 "/webjars/",
 
-                // Actuator
+                // Actuator y recursos estáticos
                 "/actuator/health",
                 "/actuator/health/",
-
-                // Recursos estáticos
                 "/favicon.ico",
                 "/error",
                 "/css/",
                 "/js/",
                 "/images/",
-                "/static/",
-
-                // Root
-                "/"
+                "/static/"
         };
 
-        // Verificar si el path coincide con algún path público
+        // Verificar paths públicos específicos
         for (String publicPath : publicPaths) {
-            if (path.startsWith(publicPath)) {
+            if (path.equals(publicPath) || path.startsWith(publicPath)) {
                 if (log.isTraceEnabled()) {
                     log.trace("Saltando JWT para endpoint público: {} {}", method, path);
                 }
@@ -231,7 +231,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             return true;
         }
 
-        // Reviews públicas (solo GET para ver reviews)
+        // Reviews públicas (solo GET)
         if (path.startsWith("/api/v1/reviews/product/") && "GET".equals(method)) {
             if (log.isTraceEnabled()) {
                 log.trace("Saltando JWT para reviews públicas: {} {}", method, path);
@@ -239,6 +239,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             return true;
         }
 
+        // IMPORTANTE: NO saltar el filtro para endpoints que requieren autenticación
+        // como /api/v1/auth/validate-token, /api/v1/auth/change-password, /api/v1/auth/me
         return false;
     }
 
