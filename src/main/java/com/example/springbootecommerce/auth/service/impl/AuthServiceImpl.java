@@ -64,7 +64,7 @@ public class AuthServiceImpl implements AuthService {
         
         try {
             // Autentica al usuario usando el AuthenticationManager
-            var authentication = authenticationManager.authenticate(
+            authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginRequest.getEmail(),
                             loginRequest.getPassword()
@@ -276,7 +276,7 @@ public class AuthServiceImpl implements AuthService {
                 return false;
             }
 
-            // Limpia el prefijo "Bearer " si está presente
+            // Limpia el prefijo "Bearer" si está presente
             if (token.startsWith("Bearer ")) {
                 token = token.substring(7);
             }
@@ -301,7 +301,7 @@ public class AuthServiceImpl implements AuthService {
         log.debug("Procesando cambio de contraseña");
 
         try {
-            // Valida que las nuevas contraseñas coincidan
+            // Válida que las nuevas contraseñas coincidan
             if (!changePasswordDTO.getNewPassword().equals(changePasswordDTO.getConfirmPassword())) {
                 throw new BusinessException("Las contraseñas nuevas no coinciden", "CHANGE_PWD_MISMATCH");
             }
