@@ -1,5 +1,6 @@
 package com.example.springbootecommerce.shared.security;
 
+import com.example.springbootecommerce.auth.service.TokenBlacklistService;
 import com.example.springbootecommerce.shared.util.Constants;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -36,6 +37,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final CustomUserDetailService userDetailsService;
+    private final TokenBlacklistService tokenBlacklistService;
 
     /**
      * Función principal del filtro que procesa cada request HTTP.
@@ -63,6 +65,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             if (jwt.isEmpty()) {
                 log.debug("Token JWT vacío");
                 filterChain.doFilter(request, response);
+                return;
+            }
+
+            if (tokenBlacklistService.isTokenBlacklisted(jwt)) {
+                log.debug("Token JWT está en la lista negra");
+                handleJwtException(response, "Token invalidado", HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }
 

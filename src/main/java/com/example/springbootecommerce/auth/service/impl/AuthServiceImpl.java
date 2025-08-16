@@ -2,6 +2,7 @@ package com.example.springbootecommerce.auth.service.impl;
 
 import com.example.springbootecommerce.auth.dto.*;
 import com.example.springbootecommerce.auth.service.AuthService;
+import com.example.springbootecommerce.auth.service.TokenBlacklistService;
 import com.example.springbootecommerce.shared.exception.BusinessException;
 import com.example.springbootecommerce.shared.security.JwtService;
 import com.example.springbootecommerce.user.entity.Role;
@@ -44,6 +45,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final UserMapper userMapper;
+    private final TokenBlacklistService tokenBlacklistService;
 
     @Value("${app.jwt.expiration:86400000}") // 24 horas por defecto
     private long jwtExpiration;
@@ -263,7 +265,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public boolean logout(String token) {
         log.debug("Procesando solicitud de logout");
 
@@ -281,7 +283,9 @@ public class AuthServiceImpl implements AuthService {
             String userEmail = jwtService.extractUsername(token);
             log.info("Logout procesado para usuario: {}", userEmail);
 
-            // TODO: Implementar blacklist de tokens para invalidación inmediata
+            tokenBlacklistService.blacklistToken(token);
+            org.springframework.security.core.context.SecurityContextHolder.clearContext();
+
             return true;
 
         } catch (Exception e) {
