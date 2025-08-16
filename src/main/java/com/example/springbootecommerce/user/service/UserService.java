@@ -81,18 +81,10 @@ public interface UserService {
      * Obtiene todos los usuarios activos con paginación.
      *
      * @param pageable Configuración de paginación
-     * @return Página de usuarios
+     * @return Página de usuarios con el dto personalizado summary
      */
-    PageResponse<UserDTO> getAllUsers(Pageable pageable);
+    public PageResponse<UserDTO.UserSummaryDTO> getAllUsersAndSearchUsers(String search, Pageable pageable);
 
-    /**
-     * Busca usuarios por nombre, email u otros criterios usando especificaciones.
-     *
-     * @param search   Término de búsqueda
-     * @param pageable Configuración de paginación
-     * @return Página de usuarios que coinciden con la búsqueda
-     */
-    PageResponse<UserDTO> searchUsers(String search, Pageable pageable);
 
     /**
      * Activa un usuario (solo administradores)

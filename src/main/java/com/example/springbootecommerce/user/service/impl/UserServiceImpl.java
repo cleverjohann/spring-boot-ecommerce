@@ -16,9 +16,12 @@ import com.example.springbootecommerce.user.mapper.AddressMapper;
 import com.example.springbootecommerce.user.mapper.UserMapper;
 import com.example.springbootecommerce.user.repository.UserRepository;
 import com.example.springbootecommerce.user.service.UserService;
+import com.example.springbootecommerce.user.specification.UserSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -181,14 +184,37 @@ public class UserServiceImpl implements UserService {
     // ========================================================================
 
     @Override
-    public PageResponse<UserDTO> getAllUsers(Pageable pageable) {
-        return null;
+    public PageResponse<UserDTO.UserSummaryDTO> getAllUsersAndSearchUsers(String search, Pageable pageable) {
+        log.debug("Buscando usuarios (resumen) con término: '{}' y paginación: {}", search, pageable);
+
+        verifyAdminPermissions();
+
+        Specification<User> spec = UserSpecification.isActive();
+        if (search != null && !search.trim().isEmpty()) {
+            spec = spec.and(UserSpecification.nameContains(search.trim()));
+        }
+
+        Page<User> userPage = userRepository.findAll(spec, pageable);
+        List<UserDTO.UserSummaryDTO> userSummaries = userPage.getContent()
+                .stream()
+                .map(userMapper::toUserSummaryDTO)
+                .toList();
+
+        PageResponse<UserDTO.UserSummaryDTO> response = new PageResponse<>(
+                userSummaries,
+                userPage.getNumber(),
+                userPage.getSize(),
+                userPage.getTotalElements(),
+                userPage.getTotalPages(),
+                userPage.isFirst(),
+                userPage.isLast(),
+                userPage.isEmpty()
+        );
+
+        log.debug("Búsqueda de usuarios (resumen) completada: {} encontrados", userPage.getTotalElements());
+        return response;
     }
 
-    @Override
-    public PageResponse<UserDTO> searchUsers(String search, Pageable pageable) {
-        return null;
-    }
 
     @Override
     @Transactional
