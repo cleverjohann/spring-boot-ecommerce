@@ -18,6 +18,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -284,7 +285,7 @@ public class AuthServiceImpl implements AuthService {
             log.info("Logout procesado para usuario: {}", userEmail);
 
             tokenBlacklistService.blacklistToken(token);
-            org.springframework.security.core.context.SecurityContextHolder.clearContext();
+            SecurityContextHolder.clearContext();
 
             return true;
 

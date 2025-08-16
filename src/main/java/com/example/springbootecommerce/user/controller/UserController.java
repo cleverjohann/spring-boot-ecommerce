@@ -43,7 +43,7 @@ public class UserController {
     public ResponseEntity<ApiResponse<UserDTO>> getCurrentUserProfile(){
         log.debug("Obteniendo perfil de usuario actual");
         UserDTO userDTO = userService.getCurrentUserProfile();
-        return ResponseEntity.ok(ApiResponse.success(userDTO,"Peril obtenido exitosamente"));
+        return ResponseEntity.ok(ApiResponse.success(userDTO,"Perfil obtenido exitosamente"));
     }
 
     @PutMapping("/me")
@@ -73,7 +73,7 @@ public class UserController {
     // ENDPOINTS ADMINISTRATIVOS
     // ========================================================================
 
-    @GetMapping("/{userId}")
+    @GetMapping("/admin/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Obtener perfil de usuario", description = "Obtiene el perfil de un usuario concreto")
     public ResponseEntity<UserDTO> getUserProfile(@PathVariable Long userId){
