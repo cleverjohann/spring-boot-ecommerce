@@ -68,10 +68,9 @@ public interface UserService {
      *
      * @param currentPassword Contraseña actual
      * @param newPassword     Nueva contraseña
-     * @return true si se cambió correctamente
      * @throws BusinessException si la contraseña actual es incorrecta
      */
-    boolean changePassword(String currentPassword, String newPassword);
+    void changePassword(String currentPassword, String newPassword);
 
     // ========================================================================
     // OPERACIONES ADMINISTRATIVAS
@@ -84,7 +83,6 @@ public interface UserService {
      * @return Página de usuarios con el dto personalizado summary
      */
     public PageResponse<UserDTO.UserSummaryDTO> getAllUsersAndSearchUsers(String search, Pageable pageable);
-
 
     /**
      * Activa un usuario (solo administradores)
@@ -233,7 +231,7 @@ public interface UserService {
     /**
      * Obtiene estadísticas generales de usuarios
      *
-     * @return Mapa con estadísticas (total usuarios, activos, por rol, etc.)
+     * @return Mapa con estadísticas (total usuario, activos, por rol, etc.)
      */
     UserStatistics getUserStatistics();
 

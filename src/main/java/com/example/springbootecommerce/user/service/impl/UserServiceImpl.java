@@ -152,7 +152,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public boolean changePassword(String currentPassword, String newPassword) {
+    public void changePassword(String currentPassword, String newPassword) {
         log.info("Cambio de contraseña del usuario actual");
 
         User currentUser = getCurrentUserEntity();
@@ -176,7 +176,6 @@ public class UserServiceImpl implements UserService {
         userRepository.save(currentUser);
 
         log.info("Contraseña cambiada exitosamente para usuario: {}", currentUser.getEmail());
-        return true;
     }
 
     // ========================================================================
@@ -254,7 +253,7 @@ public class UserServiceImpl implements UserService {
         user.setIsActive(false);
         User savedUser = userRepository.save(user);
 
-        log.info("Usuario desactivado exitosamente : {}", user.getEmail());
+        log.info("Usuario desactivado exitosamente por el Admin : {}", user.getEmail());
         return userMapper.toUserDTO(savedUser);
     }
 

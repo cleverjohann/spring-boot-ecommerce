@@ -2,6 +2,8 @@ package com.example.springbootecommerce.auth.controller;
 
 import com.example.springbootecommerce.auth.dto.*;
 import com.example.springbootecommerce.auth.service.AuthService;
+import com.example.springbootecommerce.auth.service.TokenBlacklistService;
+import com.example.springbootecommerce.shared.security.CustomUserDetailService;
 import com.example.springbootecommerce.shared.security.JwtService;
 import com.example.springbootecommerce.user.dto.UserDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.web.servlet.MockMvc;
@@ -60,8 +61,13 @@ class AuthControllerTest {
         }
 
         @Bean
-        UserDetailsService userDetailsService() {
-            return Mockito.mock(UserDetailsService.class);
+        CustomUserDetailService customUserDetailService() {
+            return Mockito.mock(CustomUserDetailService.class);
+        }
+
+        @Bean
+        TokenBlacklistService tokenBlacklistService() {
+            return Mockito.mock(TokenBlacklistService.class);
         }
 
         @Bean
@@ -89,7 +95,10 @@ class AuthControllerTest {
                 .user(userDTO)
                 .build();
     }
-
+    /**
+     * Prueba que el endpoint /auth/login retorna los tokens y datos del usuario
+     * cuando las credenciales son válidas.
+     */
     @Test
     void login_ShouldReturnJwtResponse_WhenCredentialsAreValid() throws Exception {
         LoginRequestDTO loginRequest = new LoginRequestDTO("user@ecommerce.com", "password123");
@@ -105,6 +114,10 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.data.user.email", is("user@ecommerce.com")));
     }
 
+    /**
+     * Prueba que el endpoint /auth/login retorna 401 Unauthorized
+     * cuando las credenciales son inválidas.
+     */
     @Test
     void login_ShouldReturnUnauthorized_WhenCredentialsAreInvalid() throws Exception {
         LoginRequestDTO loginRequest = new LoginRequestDTO("user@ecommerce.com", "wrongpassword");
@@ -117,6 +130,10 @@ class AuthControllerTest {
                 .andExpect(status().isUnauthorized());
     }
 
+    /**
+     * Prueba que el endpoint /auth/register retorna los tokens y datos del usuario
+     * cuando el registro es exitoso.
+     */
     @Test
     void register_ShouldReturnJwtResponse_WhenRegistrationIsSuccessful() throws Exception {
         RegisterRequestDTO registerRequest = new RegisterRequestDTO("Test", "User", "newuser@ecommerce.com", "password123");
@@ -131,6 +148,10 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.data.access_token", is("accessToken")));
     }
 
+    /**
+     * Prueba que el endpoint /auth/refresh retorna nuevos tokens
+     * cuando el refresh token es válido.
+     */
     @Test
     void refreshToken_ShouldReturnNewJwtResponse_WhenRefreshTokenIsValid() throws Exception {
         RefreshTokenRequestDTO refreshTokenRequest = new RefreshTokenRequestDTO("validRefreshToken");
@@ -144,6 +165,10 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.data.access_token", is("accessToken")));
     }
 
+    /**
+     * Prueba que el endpoint /auth/forgot-password siempre retorna éxito,
+     * independientemente de si el email existe o no.
+     */
     @Test
     void requestPasswordReset_ShouldReturnSuccess() throws Exception {
         PasswordResetRequestDTO request = new PasswordResetRequestDTO("user@ecommerce.com");
@@ -157,6 +182,10 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.message", is("Solicitud procesada correctamente")));
     }
 
+    /**
+     * Prueba que el endpoint /auth/reset-password retorna éxito
+     * cuando el token es válido y las contraseñas coinciden.
+     */
     @Test
     void resetPassword_ShouldReturnSuccess_WhenTokenIsValid() throws Exception {
         PasswordResetDTO request = new PasswordResetDTO("valid-token", "newPassword123", "newPassword123");
@@ -170,6 +199,10 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.message", is("Contraseña restablecida exitosamente")));
     }
 
+    /**
+     * Prueba que el endpoint /auth/reset-password retorna 400 Bad Request
+     * cuando las contraseñas no coinciden.
+     */
     @Test
     void resetPassword_ShouldReturnBadRequest_WhenPasswordsDoNotMatch() throws Exception {
         PasswordResetDTO request = new PasswordResetDTO("valid-token", "newPassword123", "differentPassword");
@@ -182,6 +215,10 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.message", is("Las contraseñas no coinciden")));
     }
 
+    /**
+     * Prueba que el endpoint /auth/me retorna el email del usuario autenticado
+     * cuando el token es válido.
+     */
     @Test
     @WithMockUser
     void getCurrentUser_ShouldReturnUserInfo_WhenUserIsAuthenticated() throws Exception {
