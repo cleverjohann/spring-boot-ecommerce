@@ -1,4 +1,4 @@
-package com.example.springbootecommerce.user.specification;
+package com.example.springbootecommerce.user.repository.specification;
 
 import com.example.springbootecommerce.user.entity.User;
 import org.springframework.data.jpa.domain.Specification;

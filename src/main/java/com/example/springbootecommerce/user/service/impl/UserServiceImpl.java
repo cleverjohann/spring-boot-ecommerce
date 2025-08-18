@@ -16,7 +16,7 @@ import com.example.springbootecommerce.user.mapper.AddressMapper;
 import com.example.springbootecommerce.user.mapper.UserMapper;
 import com.example.springbootecommerce.user.repository.UserRepository;
 import com.example.springbootecommerce.user.service.UserService;
-import com.example.springbootecommerce.user.specification.UserSpecification;
+import com.example.springbootecommerce.user.repository.specification.UserSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
