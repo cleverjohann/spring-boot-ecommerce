@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 
-public class UpdateProducto {
+public class UpdateProductoDTO {
     @Size(max = 255, message = "El nombre no puede exceder 255 caracteres")
     private String name;
 

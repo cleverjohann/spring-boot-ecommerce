@@ -14,7 +14,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 /**
- * Interfaz del servicio de usuarios que define las operaciones de negocio.
+ * Interfaz del servicio de usuarios que define las operaciones de negocio.c
  * Sigue el principio de segregación de interfaces (ISP) y abstracción.
  */
 public interface UserService {

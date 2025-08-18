@@ -5,7 +5,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-public class ProductSearchCriteria {
+public class ProductoSearchCriteria {
     private String searchTerm;
 
     private Long categoryId;

@@ -4,7 +4,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 @Data
-public class ProductSummaryDTO {
+public class ProductoSummaryDTO {
     private Long id;
 
     private String name;
