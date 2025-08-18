@@ -2,6 +2,7 @@ package com.example.springbootecommerce.product.mapper;
 
 import com.example.springbootecommerce.product.dto.ReviewDTO;
 import com.example.springbootecommerce.product.entity.Review;
+import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
  * Mapper para conversión entre entidades Review y DTOs usando MapStruct.
  * Centraliza la lógica de mapeo y facilita la extensión y el mantenimiento.
  */
+@Mapper(componentModel = "spring")
 public interface ReviewMapper {
     // =========================================================================
     // CONVERSIONES BÁSICAS REVIEW -> DTO
@@ -18,9 +20,9 @@ public interface ReviewMapper {
      * Convierte una entidad Review a ReviewDTO.
      * Incluye campos calculados como productName y userName.
      */
-    @Mapping(target = "productoId", source = "producto.id")
-    @Mapping(target = "productoName", source = "producto.name")
-    @Mapping(target = "userName", source = "java(getUserFullName(review))")
+    @Mapping(target = "productId", source = "producto.id")
+    @Mapping(target = "productName", source = "producto.name")
+    @Mapping(target = "userName", expression = "java(getUserName(review))")
     ReviewDTO toReviewDTO(Review review);
 
     /**

@@ -3,11 +3,9 @@ package com.example.springbootecommerce.product.mapper;
 import com.example.springbootecommerce.product.dto.CreateProductoDTO;
 import com.example.springbootecommerce.product.dto.ProductoDTO;
 import com.example.springbootecommerce.product.dto.ProductoSummaryDTO;
-import com.example.springbootecommerce.product.dto.ReviewDTO;
 import com.example.springbootecommerce.product.entity.Producto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.ObjectFactory;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
@@ -34,7 +32,7 @@ public interface ProductoMapper {
     @Mapping(target = "stockStatus", expression = "java(producto.getStockStatus() != null ?" +
             " producto.getStockStatus().getDisplayName() :" +
             " null)" )
-    @Mapping(target = "recentReviews", expression = "java(mapRecentReviews(producto))")
+    @Mapping(target = "recentReviews", source = "reviews")
     ProductoDTO toProductoDTO(Producto producto);
 
     /**
@@ -74,32 +72,7 @@ public interface ProductoMapper {
     @Mapping(target = "updatedAt",ignore = true)
     Producto toEntity(CreateProductoDTO createProductoDTO);
 
-    // =========================================================================
-    // MÉTODOS AUXILIARES (default methods)
-    // =========================================================================
-    /**
-     * Obtiene las 3 reseñas más recientes del producto.
-     */
-    default List<ReviewDTO> mapRecentReviews (Producto producto){
-        if (producto == null || producto.getReviews() == null || producto.getReviews().isEmpty()){
-            return List.of();
-        }
-        return producto.getReviews().stream()
-                .sorted()
-                .limit(3)
-                .map(getReviewMapper()::toReviewDTO)
-                .toList();
-    }
-
-    /**
-     * Provee acceso al ReviewMapper para métodos default.
-     * MapStruct inyecta automáticamente los mappers usados.
-     */
-    @ObjectFactory
-    default ReviewMapper getReviewMapper(){
-        //MapStruct inyecta el mapper real en tiempo de ejecución.
-        return null;
-    }
+    
 
 
 }
