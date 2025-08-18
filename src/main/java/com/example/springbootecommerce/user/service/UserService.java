@@ -14,7 +14,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 /**
- * Interfaz del servicio de usuarios que define las operaciones de negocio.c
+ * Interfaz del servicio de usuarios que define las operaciones de negocio
  * Sigue el principio de segregación de interfaces (ISP) y abstracción.
  */
 public interface UserService {
@@ -80,7 +80,7 @@ public interface UserService {
      * Obtiene todos los usuarios activos con paginación.
      *
      * @param pageable Configuración de paginación
-     * @return Página de usuarios con el dto personalizado summary
+     * @return Página de usuarios con el dto. Personalizado summary
      */
     public PageResponse<UserDTO.UserSummaryDTO> getAllUsersAndSearchUsers(String search, Pageable pageable);
 
@@ -135,7 +135,7 @@ public interface UserService {
     /**
      * Actualiza una dirección existente del usuario actual
      *
-     * @param addressId         ID de la dirección
+     * @param addressId ID de la dirección
      * @param updatedAddressDTO Datos actualizados
      * @return AddressDTO actualizada
      * @throws ResourceNotFoundException      si la dirección no existe
@@ -178,7 +178,7 @@ public interface UserService {
     /**
      * Verifica si un email ya está en uso (excluyendo un usuario específico)
      *
-     * @param email         Email a verificar
+     * @param email Email a verificar
      * @param excludeUserId ID del usuario a excluir de la verificación
      * @return true si el email está disponible
      */

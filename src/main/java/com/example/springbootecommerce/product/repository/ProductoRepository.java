@@ -22,17 +22,17 @@ public interface ProductoRepository extends JpaRepository<Producto,Long>, JpaSpe
 
     // Verificar si existe un producto con SKU
     boolean existsBySku(String sku);
-    //TODO: Implementar productos mas vendidos con orden
+
     // Productos más vendidos (requiere JOIN con order_items)
-//    @Query("""
-//        SELECT p FROM Producto p
-//        JOIN OrderItem oi ON p.id = oi.product.id
-//        JOIN Order o ON oi.order.id = o.id
-//        WHERE p.isActive = true AND o.status IN ('DELIVERED', 'SHIPPED')
-//        GROUP BY p.id
-//        ORDER BY SUM(oi.quantity) DESC
-//        """)
-//    Page<Producto> findBestSellingProducts(Pageable pageable);
+    @Query("""
+        SELECT p FROM Producto p
+        JOIN OrderItem oi ON p.id = oi.product.id
+        JOIN Order o ON oi.order.id = o.id
+        WHERE p.isActive = true AND o.status IN ('DELIVERED', 'SHIPPED')
+        GROUP BY p.id
+        ORDER BY SUM(oi.quantity) DESC
+        """)
+    Page<Producto> findBestSellingProducts(Pageable pageable);
 
     // Productos mejor calificados
     @Query("""
@@ -69,4 +69,9 @@ public interface ProductoRepository extends JpaRepository<Producto,Long>, JpaSpe
     // Productos que necesitan restock
     @Query("SELECT p FROM Producto p WHERE p.isActive = true AND p.stockQuantity < :threshold")
     List<Producto> findProductsNeedingRestock(@Param("threshold") int threshold);
+
+    @Query("SELECT p FROM Producto p WHERE p.isActive = true AND p.stockQuantity <= 5")
+    List<Producto> findLowStockProducts();
+
+
 }

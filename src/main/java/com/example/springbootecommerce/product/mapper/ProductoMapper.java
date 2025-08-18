@@ -1,6 +1,8 @@
 package com.example.springbootecommerce.product.mapper;
 
+import com.example.springbootecommerce.product.dto.CreateProductoDTO;
 import com.example.springbootecommerce.product.dto.ProductoDTO;
+import com.example.springbootecommerce.product.dto.ProductoSummaryDTO;
 import com.example.springbootecommerce.product.dto.ReviewDTO;
 import com.example.springbootecommerce.product.entity.Producto;
 import org.mapstruct.Mapper;
@@ -40,6 +42,23 @@ public interface ProductoMapper {
      */
     List<ProductoDTO> toProductoDTOs(List<Producto> productos);
 
+    /**
+     * Convierte una entidad Producto a ProductoSummaryDTO.
+     * Incluye el promedio y total views
+     */
+    @Mapping(target = "categoryName", source = "categoria.name")
+    @Mapping(target = "stockStatus", expression = "java(producto.getStockStatus() != null ?" +
+            " producto.getStockStatus().getDisplayName() :" +
+            " null)" )
+    @Mapping(target = "averageRating", expression = "java(producto.getAverageRating())")
+    @Mapping(target = "totalReviews", expression = "java(producto.getTotalRatings())")
+    ProductoSummaryDTO toSummaryDTO(Producto producto);
+
+    /**
+     * Convierte una lista de entidades Producto a una lista de ProductoSummaryDTO.
+     */
+    List<ProductoSummaryDTO> toSummaryDTOs(List<Producto> productos);
+
     // =========================================================================
     // CONVERSIONES DTO -> ENTITY
     // =========================================================================
@@ -53,7 +72,7 @@ public interface ProductoMapper {
     @Mapping(target = "isActive", constant = "true")
     @Mapping(target = "createdAt",ignore = true)
     @Mapping(target = "updatedAt",ignore = true)
-    Producto toEntity(ProductoDTO productoDTO);
+    Producto toEntity(CreateProductoDTO createProductoDTO);
 
     // =========================================================================
     // MÉTODOS AUXILIARES (default methods)
