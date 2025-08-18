@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CategoriaRepository extends JpaRepository<Categoria,Long> {
@@ -30,4 +31,8 @@ public interface CategoriaRepository extends JpaRepository<Categoria,Long> {
     @Query("SELECT c FROM Categoria c WHERE c.isActive = true AND (c.name ILIKE %:searchTerm% OR c.description ILIKE %:searchTerm%)")
     List<Categoria> searchByNameOrDescription(@Param("searchTerm") String searchTerm);
 
+    @Query("SELECT c FROM Categoria c WHERE c.parent.id = :parentId AND c.isActive = true ORDER BY c.displayOrder ASC")
+    List<Categoria> findByParentId(@Param("parentId") Long parentId);
+
+    Optional<Categoria> findByNameIgnoreCase(String name);
 }

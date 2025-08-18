@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 /**
- * Mapper para conversión entre entidades Categoria y DTOs usando MapStruct.
+ * Mapper para conversión entre entidades Categoria y DTO usando MapStruct.
  * Centraliza la lógica de mapeo y facilita la extensión y el mantenimiento.
  */
 @Mapper(componentModel = "spring")
@@ -60,6 +60,7 @@ public interface CategoriaMapper {
      * Cuenta la cantidad de productos activos en una categoría.
      * Se usa para poblar el campo productCount en los DTOs.
      */
+
     default int countActiveProductos(Categoria categoria){
         if (categoria == null || categoria.getProductos() == null) return 0;
         return (int) categoria.getProductos().stream()
