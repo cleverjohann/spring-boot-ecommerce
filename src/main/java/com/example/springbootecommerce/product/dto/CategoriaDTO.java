@@ -2,7 +2,9 @@ package com.example.springbootecommerce.product.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 
+@Data
 public class CategoriaDTO {
 
     private Long id;
