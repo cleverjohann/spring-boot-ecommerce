@@ -24,15 +24,15 @@ public interface ProductoRepository extends JpaRepository<Producto,Long>, JpaSpe
     boolean existsBySku(String sku);
 
     // Productos más vendidos (requiere JOIN con order_items)
-    @Query("""
-        SELECT p FROM Producto p
-        JOIN OrderItem oi ON p.id = oi.product.id
-        JOIN Order o ON oi.order.id = o.id
-        WHERE p.isActive = true AND o.status IN ('DELIVERED', 'SHIPPED')
-        GROUP BY p.id
-        ORDER BY SUM(oi.quantity) DESC
-        """)
-    Page<Producto> findBestSellingProducts(Pageable pageable);
+//    @Query("""
+//        SELECT p FROM Producto p
+//        JOIN OrderItem oi ON p.id = oi.product.id
+//        JOIN Order o ON oi.order.id = o.id
+//        WHERE p.isActive = true AND o.status IN ('DELIVERED', 'SHIPPED')
+//        GROUP BY p.id
+//        ORDER BY SUM(oi.quantity) DESC
+//        """)
+//    Page<Producto> findBestSellingProducts(Pageable pageable);
 
     // Productos mejor calificados
     @Query("""

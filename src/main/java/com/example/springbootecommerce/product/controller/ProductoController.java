@@ -113,14 +113,14 @@ public class ProductoController {
                 "Productos relacionados encontrados exitosamente"));
     }
 
-    @GetMapping("/mas-vendidos")
-    public ResponseEntity<ApiResponse<PageResponse<ProductoSummaryDTO>>> getProductosMasVendidos(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        var productos = productoService.getBestSellingProducts(page, size);
-        var pageResponse = PageResponse.of(productos);
-        return ResponseEntity.ok(ApiResponse.success(pageResponse, "Productos más vendidos encontrados exitosamente"));
-    }
+//    @GetMapping("/mas-vendidos")
+//    public ResponseEntity<ApiResponse<PageResponse<ProductoSummaryDTO>>> getProductosMasVendidos(
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "10") int size) {
+//        var productos = productoService.getBestSellingProducts(page, size);
+//        var pageResponse = PageResponse.of(productos);
+//        return ResponseEntity.ok(ApiResponse.success(pageResponse, "Productos más vendidos encontrados exitosamente"));
+//    }
 
     @GetMapping("/mejor-calificados")
     public ResponseEntity<ApiResponse<PageResponse<ProductoSummaryDTO>>> getProductosMejorCalificados(

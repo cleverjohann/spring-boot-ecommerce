@@ -84,7 +84,8 @@ public interface ProductoService {
      * @param size Tamaño de página
      * @return Página de resúmenes de productos
      */
-    Page<ProductoSummaryDTO> getBestSellingProducts(int page, int size);
+    //TODO: Proxima implementacion
+//    Page<ProductoSummaryDTO> getBestSellingProducts(int page, int size);
 
     /**
      * Obtiene los productos mejor valorados.
