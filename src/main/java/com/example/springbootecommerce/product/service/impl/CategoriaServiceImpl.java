@@ -2,6 +2,7 @@ package com.example.springbootecommerce.product.service.impl;
 
 import com.example.springbootecommerce.product.dto.CategoriaDTO;
 import com.example.springbootecommerce.product.dto.CategoriaTreeDTO;
+import com.example.springbootecommerce.product.dto.CreateCategoriaDTO;
 import com.example.springbootecommerce.product.entity.Categoria;
 import com.example.springbootecommerce.product.mapper.CategoriaMapper;
 import com.example.springbootecommerce.product.repository.CategoriaRepository;
@@ -90,7 +91,7 @@ public class CategoriaServiceImpl implements CategoriaService {
     // ========================================================================
 
     @Transactional
-    public CategoriaDTO createCategory(CategoriaDTO createCategoriaDTO) {
+    public CategoriaDTO createCategory(CreateCategoriaDTO createCategoriaDTO) {
         log.info("Creando categoria con nombre: {}", createCategoriaDTO.getName());
 
         // Verificar que no existe una categoria con el mismo nombre

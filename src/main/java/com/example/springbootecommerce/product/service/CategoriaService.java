@@ -2,6 +2,7 @@ package com.example.springbootecommerce.product.service;
 
 import com.example.springbootecommerce.product.dto.CategoriaDTO;
 import com.example.springbootecommerce.product.dto.CategoriaTreeDTO;
+import com.example.springbootecommerce.product.dto.CreateCategoriaDTO;
 import com.example.springbootecommerce.shared.exception.BusinessException;
 import com.example.springbootecommerce.shared.exception.ResourceNotFoundException;
 
@@ -74,7 +75,7 @@ public interface CategoriaService {
      * @throws BusinessException si ya existe una categoría con el mismo nombre
      * @throws ResourceNotFoundException si la categoría padre no existe
      */
-    CategoriaDTO createCategory(CategoriaDTO createCategoriaDTO);
+    CategoriaDTO createCategory(CreateCategoriaDTO createCategoriaDTO);
 
     /**
      * Actualiza una categoría existente.

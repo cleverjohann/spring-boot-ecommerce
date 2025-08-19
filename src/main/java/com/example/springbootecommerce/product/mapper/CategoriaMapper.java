@@ -2,6 +2,7 @@ package com.example.springbootecommerce.product.mapper;
 
 import com.example.springbootecommerce.product.dto.CategoriaDTO;
 import com.example.springbootecommerce.product.dto.CategoriaTreeDTO;
+import com.example.springbootecommerce.product.dto.CreateCategoriaDTO;
 import com.example.springbootecommerce.product.entity.Categoria;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -51,7 +52,7 @@ public interface CategoriaMapper {
     @Mapping(target = "productos", ignore = true)
     @Mapping(target = "subcategories", ignore = true)
     @Mapping(target = "isActive", constant = "true")
-    Categoria toEntity(CategoriaDTO categoriaDTO);
+    Categoria toEntity(CreateCategoriaDTO createCategoriaDTO);
 
     // ========================================================================
     // MÉTODOS AUXILIAR PARA CONTAR PRODUCTOS ACTIVOS
