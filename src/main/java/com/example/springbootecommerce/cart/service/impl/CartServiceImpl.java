@@ -2,7 +2,6 @@ package com.example.springbootecommerce.cart.service.impl;
 
 import com.example.springbootecommerce.cart.dto.AddItemDTO;
 import com.example.springbootecommerce.cart.dto.CartDTO;
-import com.example.springbootecommerce.cart.dto.CartItemDTO;
 import com.example.springbootecommerce.cart.entity.Cart;
 import com.example.springbootecommerce.cart.entity.CartItem;
 import com.example.springbootecommerce.cart.mapper.CartMapper;
@@ -60,33 +59,32 @@ public class CartServiceImpl implements CartService {
         log.info("Agregando item al carrito - Usuario: {}, Producto:{}, Cantidad:{}", userId, addItemDTO.getProductId(), addItemDTO.getQuantity());
 
         Producto producto = productoRepository.findById(addItemDTO.getProductId())
-                .orElseThrow(()-> new ResourceNotFoundException("Producto no encontrado con ID: "));
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + addItemDTO.getProductId()));
 
-        if (!Boolean.TRUE.equals(producto.getIsActive())){
-            throw new BusinessException("El producto no esta disponible");
-        }
-        if (!producto.hasStock(addItemDTO.getQuantity())){
-            throw new BusinessException("Stock insuficiente. Disponible: " + producto.getStockQuantity());
+        if (!Boolean.TRUE.equals(producto.getIsActive())) {
+            throw new BusinessException("El producto no está disponible");
         }
 
         Cart cart = findOrCreateCart(userId);
 
+        // Unificar la lógica de validación de stock
+        int quantityToAdd = addItemDTO.getQuantity();
         CartItem existingItem = cart.findItemByProductId(addItemDTO.getProductId());
-        if (existingItem != null){
-            int newQuantity = existingItem.getQuantity() + addItemDTO.getQuantity();
-            if (!producto.hasStock(newQuantity)){
-                throw new BusinessException("Stock insuficiente. Disponible: " + producto.getStockQuantity());
-            }
-            existingItem.setQuantity(newQuantity);
-            cartItemRepository.save(existingItem);
-        }else {
-            CartItem newItem = new CartItem(cart, producto, addItemDTO.getQuantity());
-            cart.addItem(newItem);
-            cartItemRepository.save(newItem);
+        int currentQuantity = (existingItem != null) ? existingItem.getQuantity() : 0;
+        int newTotalQuantity = currentQuantity + quantityToAdd;
+
+        if (!producto.hasStock(newTotalQuantity)) {
+            throw new BusinessException("Stock insuficiente. Disponible: " + producto.getStockQuantity() + ", solicitado: " + newTotalQuantity);
         }
 
-        cart = cartRepository.save(cart);
-        log.info("Item agregado exitosamente al carrito");
+        // Usar el método de la entidad Cart para agregar o actualizar
+        CartItem itemToAdd = new CartItem(cart, producto, quantityToAdd);
+        cart.addItem(itemToAdd);
+
+        // Guardar el carrito (los items se guardarán por cascada)
+        cartRepository.save(cart);
+
+        log.info("Item agregado/actualizado exitosamente en el carrito del usuario {}", userId);
         return cartMapper.toCartDTO(cart);
     }
 
@@ -166,8 +164,8 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartDTO getCartWithStockValidation(Long userId) {
-        CartDTO cartDTO = getCartForUser(userId);
-        return null;
+        Cart cart = findOrCreateCart(userId);
+        return cartMapper.toCartDTO(cart);
     }
 
     // ========================================================================

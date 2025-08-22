@@ -84,7 +84,7 @@ public class CategoriaController {
     // ENDPOINTS ADMINISTRATIVOS
     // ========================================================================
 
-    @PostMapping
+    @PostMapping("/admin")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<CategoriaDTO>> createCategoria(@Valid @RequestBody CreateCategoriaDTO createCategoriaDTO){
         log.info("REST request to create Categoria : {}", createCategoriaDTO);
@@ -93,7 +93,7 @@ public class CategoriaController {
         return ResponseEntity.ok(ApiResponse.success(createCategoria,"Categoria encontrada encontradas"));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/admin/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<CategoriaDTO>> updateCategoria(
             @PathVariable Long id,
@@ -104,7 +104,7 @@ public class CategoriaController {
         return ResponseEntity.ok(ApiResponse.success(updateCategoria,"Categoria encontrada encontradas"));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<CategoriaDTO>> deleteCategoria(@PathVariable Long id){
         log.info("REST request to delete Categoria : {}", id);

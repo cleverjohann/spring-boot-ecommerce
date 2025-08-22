@@ -32,6 +32,7 @@ public class Cart extends Auditable {
 
     public Cart(User user){
         this.user = user;
+        this.items = new ArrayList<>();
     }
 
     // ========================================================================
