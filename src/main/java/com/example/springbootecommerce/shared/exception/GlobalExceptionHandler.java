@@ -229,28 +229,6 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Maneja errores de autorización
-     */
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ErrorResponse> handleAccessDeniedException(
-            AccessDeniedException ex,
-            WebRequest request
-    ){
-        log.warn("Access denied: {}", ex.getMessage());
-
-        ErrorResponse errorResponse = new ErrorResponse(
-                "ACCESS_DENIED",
-                "Access denied",
-                HttpStatus.FORBIDDEN.value(),
-                getPath(request)
-        );
-        return new ResponseEntity<>(
-                errorResponse,
-                HttpStatus.FORBIDDEN
-        );
-    }
-
-    /**
      * Maneja errores de tipo de argumento
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)

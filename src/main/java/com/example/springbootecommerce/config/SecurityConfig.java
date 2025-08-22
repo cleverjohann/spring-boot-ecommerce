@@ -1,5 +1,6 @@
 package com.example.springbootecommerce.config;
 
+import com.example.springbootecommerce.shared.exception.CustomAccessDeniedHandler;
 import com.example.springbootecommerce.shared.security.CustomUserDetailService;
 import com.example.springbootecommerce.shared.security.JwtAuthenticationEntryPoint;
 import com.example.springbootecommerce.shared.security.JwtRequestFilter;
@@ -51,6 +52,7 @@ public class SecurityConfig {
     private final JwtRequestFilter jwtRequestFilter;
     private final JwtResponseFilter jwtResponseFilter;
     private final PasswordEncoder passwordEncoder; // Inyectado desde PasswordEncoderConfig
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     // ========================================================================
     // CONFIGURACIÓN PRINCIPAL DE SEGURIDAD
@@ -144,7 +146,11 @@ public class SecurityConfig {
 
                         // Por defecto, todos los demás endpoints requieren autenticación
                         .anyRequest().authenticated()
+                ).exceptionHandling(exception ->
+                        exception.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                                .accessDeniedHandler(customAccessDeniedHandler)  // Agregar esta línea
                 )
+
 
                 // Configurar proveedor de autenticación
                 .authenticationProvider(authenticationProvider())
@@ -298,4 +304,6 @@ public class SecurityConfig {
             "/api/v1/categories/{id}",
             "/api/v1/reviews/product/**"
     };
+
+
 }
