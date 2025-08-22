@@ -1,7 +1,6 @@
 package com.example.springbootecommerce.cart.entity;
 
 import com.example.springbootecommerce.product.entity.Producto;
-import com.example.springbootecommerce.shared.audit.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,7 +14,7 @@ import java.time.LocalDateTime;
 @Table(name = "cart_items", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"cart_id", "product_id"})
 })
-public class CartItem extends BaseEntity {
+public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

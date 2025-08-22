@@ -339,4 +339,6 @@ public class GlobalExceptionHandler {
                         propertyPath.lastIndexOf('.') + 1) :
                 propertyPath;
     }
+
+
 }

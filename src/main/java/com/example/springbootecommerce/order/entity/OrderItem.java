@@ -1,7 +1,6 @@
 package com.example.springbootecommerce.order.entity;
 
 import com.example.springbootecommerce.product.entity.Producto;
-import com.example.springbootecommerce.shared.audit.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,7 +11,7 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(exclude = {"order"})
 @Entity
 @Table(name = "order_items")
-public class OrderItem extends BaseEntity {
+public class OrderItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

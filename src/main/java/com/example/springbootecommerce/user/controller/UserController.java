@@ -76,9 +76,10 @@ public class UserController {
     @GetMapping("/admin/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Obtener perfil de usuario", description = "Obtiene el perfil de un usuario concreto")
-    public ResponseEntity<UserDTO> getUserProfile(@PathVariable Long userId){
+    public ResponseEntity<ApiResponse<UserDTO>> getUserProfile(@PathVariable Long userId){
         log.debug("Obteniendo perfil de usuario con ID: {}", userId);
         UserDTO userDTO = userService.getUserById(userId);
-        return ResponseEntity.ok(userDTO);
+        return ResponseEntity.ok(ApiResponse.success(userDTO, "Perfil de usuario obtenido exitosamente"));
     }
+
 }
