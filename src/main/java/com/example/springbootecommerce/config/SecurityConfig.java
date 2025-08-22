@@ -69,7 +69,9 @@ public class SecurityConfig {
 
                 // Configurar manejo de excepciones
                 .exceptionHandling(exception ->
-                        exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+                        exception.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                                .accessDeniedHandler(customAccessDeniedHandler)
+                )
 
                 // Política de sesiones: stateless (sin sesión)
                 .sessionManagement(session ->
@@ -146,11 +148,7 @@ public class SecurityConfig {
 
                         // Por defecto, todos los demás endpoints requieren autenticación
                         .anyRequest().authenticated()
-                ).exceptionHandling(exception ->
-                        exception.authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                                .accessDeniedHandler(customAccessDeniedHandler)  // Agregar esta línea
                 )
-
 
                 // Configurar proveedor de autenticación
                 .authenticationProvider(authenticationProvider())
