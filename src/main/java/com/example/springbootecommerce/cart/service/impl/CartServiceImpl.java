@@ -69,6 +69,7 @@ public class CartServiceImpl implements CartService {
 
         // Unificar la lógica de validación de stock
         int quantityToAdd = addItemDTO.getQuantity();
+        // Busca en el carrito si existe el producto
         CartItem existingItem = cart.findItemByProductId(addItemDTO.getProductId());
         int currentQuantity = (existingItem != null) ? existingItem.getQuantity() : 0;
         int newTotalQuantity = currentQuantity + quantityToAdd;
@@ -77,7 +78,7 @@ public class CartServiceImpl implements CartService {
             throw new BusinessException("Stock insuficiente. Disponible: " + producto.getStockQuantity() + ", solicitado: " + newTotalQuantity);
         }
 
-        // Usar el método de la entidad Cart para agregar o actualizar
+        // Usar la función de la entidad Cart para agregar o actualizar
         CartItem itemToAdd = new CartItem(cart, producto, quantityToAdd);
         cart.addItem(itemToAdd);
 
