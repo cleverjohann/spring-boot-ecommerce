@@ -173,6 +173,8 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
             "FROM Address a GROUP BY a.city, a.country ORDER BY COUNT(a) DESC")
     List<CityStatistics> getAddressStatisticsByCity();
 
+    Address findByid(Long id);
+
     // ========================================================================
     // INTERFACES PARA PROYECCIONES
     // ========================================================================

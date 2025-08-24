@@ -148,4 +148,8 @@ public class User extends Auditable implements UserDetails {
             isActive = true;
         }
     }
+
+    public boolean isAdmin() {
+        return hasRole("ROLE_ADMIN");
+    }
 }

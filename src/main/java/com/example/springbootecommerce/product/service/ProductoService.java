@@ -46,10 +46,10 @@ public interface ProductoService {
     /**
      * Obtiene productos de una categoría específica, paginados y ordenados.
      *
-     * @param categoryId   ID de la categoría
-     * @param page         Página solicitada
-     * @param size         Tamaño de página
-     * @param sortBy       Campo de ordenamiento
+     * @param categoryId    ID de la categoría
+     * @param page          Página solicitada
+     * @param size          Tamaño de página
+     * @param sortBy        Campo de ordenamiento
      * @param sortDirection Dirección de ordenamiento (ASC/DESC)
      * @return Página de resúmenes de productos
      * @throws ResourceNotFoundException si la categoría no existe
@@ -59,9 +59,9 @@ public interface ProductoService {
     /**
      * Obtiene todos los productos activos, paginados y ordenados.
      *
-     * @param page         Página solicitada
-     * @param size         Tamaño de página
-     * @param sortBy       Campo de ordenamiento
+     * @param page          Página solicitada
+     * @param size          Tamaño de página
+     * @param sortBy        Campo de ordenamiento
      * @param sortDirection Dirección de ordenamiento (ASC/DESC)
      * @return Página de resúmenes de productos
      */
@@ -84,8 +84,7 @@ public interface ProductoService {
      * @param size Tamaño de página
      * @return Página de resúmenes de productos
      */
-    //TODO: Proxima implementacion
-//    Page<ProductoSummaryDTO> getBestSellingProducts(int page, int size);
+    Page<ProductoSummaryDTO> getBestSellingProducts(int page, int size);
 
     /**
      * Obtiene los productos mejor valorados.
@@ -105,7 +104,7 @@ public interface ProductoService {
      *
      * @param createProductDTO DTO con los datos del producto
      * @return ProductDTO creado
-     * @throws BusinessException si el SKU ya existe
+     * @throws BusinessException         si el SKU ya existe
      * @throws ResourceNotFoundException si la categoría no existe
      */
     ProductoDTO createProduct(CreateProductoDTO createProductDTO);
@@ -138,7 +137,7 @@ public interface ProductoService {
      * @param productId ID del producto
      * @param quantity  Nueva cantidad de stock
      * @throws ResourceNotFoundException si el producto no existe
-     * @throws BusinessException si la cantidad es negativa
+     * @throws BusinessException         si la cantidad es negativa
      */
     void updateStock(Long productId, Integer quantity);
 
@@ -148,7 +147,7 @@ public interface ProductoService {
      * @param productId ID del producto
      * @param quantity  Cantidad a reducir
      * @throws ResourceNotFoundException si el producto no existe
-     * @throws BusinessException si el stock es insuficiente
+     * @throws BusinessException         si el stock es insuficiente
      */
     void reduceStock(Long productId, Integer quantity);
 

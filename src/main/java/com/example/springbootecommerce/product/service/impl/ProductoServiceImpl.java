@@ -104,12 +104,12 @@ public class ProductoServiceImpl implements ProductoService {
                 .toList();
     }
 
-//    @Override
-//    public Page<ProductoSummaryDTO> getBestSellingProducts(int page, int size) {
-//        Pageable pageable = PageRequest.of(page, size);
-//        Page<Producto> productos = productoRepository.findBestSellingProducts(pageable);
-//        return productos.map(productoMapper::toSummaryDTO);
-//    }
+    @Override
+    public Page<ProductoSummaryDTO> getBestSellingProducts(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Producto> productos = productoRepository.findBestSellingProducts(pageable);
+        return productos.map(productoMapper::toSummaryDTO);
+    }
 
     @Override
     public Page<ProductoSummaryDTO> getTopRatedProducts(int page, int size) {

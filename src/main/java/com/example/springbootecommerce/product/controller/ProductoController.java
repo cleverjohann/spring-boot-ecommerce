@@ -6,7 +6,6 @@ import com.example.springbootecommerce.shared.dto.ApiResponse;
 import com.example.springbootecommerce.shared.dto.PageResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -113,14 +112,14 @@ public class ProductoController {
                 "Productos relacionados encontrados exitosamente"));
     }
 
-//    @GetMapping("/mas-vendidos")
-//    public ResponseEntity<ApiResponse<PageResponse<ProductoSummaryDTO>>> getProductosMasVendidos(
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "10") int size) {
-//        var productos = productoService.getBestSellingProducts(page, size);
-//        var pageResponse = PageResponse.of(productos);
-//        return ResponseEntity.ok(ApiResponse.success(pageResponse, "Productos más vendidos encontrados exitosamente"));
-//    }
+    @GetMapping("/mas-vendidos")
+    public ResponseEntity<ApiResponse<PageResponse<ProductoSummaryDTO>>> getProductosMasVendidos(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        var productos = productoService.getBestSellingProducts(page, size);
+        var pageResponse = PageResponse.of(productos);
+        return ResponseEntity.ok(ApiResponse.success(pageResponse, "Productos más vendidos encontrados exitosamente"));
+    }
 
     @GetMapping("/mejor-calificados")
     public ResponseEntity<ApiResponse<PageResponse<ProductoSummaryDTO>>> getProductosMejorCalificados(

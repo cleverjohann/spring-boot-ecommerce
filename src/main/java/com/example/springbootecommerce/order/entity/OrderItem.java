@@ -52,6 +52,12 @@ public class OrderItem {
         this.subtotal = calculateSubtotal();
     }
 
+    public OrderItem(Order order, Producto producto, Integer quantity) {
+        this.order = order;
+        this.producto = producto;
+        this.quantity = quantity;
+    }
+
     public BigDecimal calculateSubtotal(){
         if (priceAtPurchase != null && quantity != null){
             return priceAtPurchase.multiply(BigDecimal.valueOf(quantity));

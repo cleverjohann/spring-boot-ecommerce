@@ -4,13 +4,18 @@ import com.example.springbootecommerce.cart.dto.CartDTO;
 import com.example.springbootecommerce.cart.dto.CartItemDTO;
 import com.example.springbootecommerce.cart.entity.Cart;
 import com.example.springbootecommerce.cart.entity.CartItem;
+import com.example.springbootecommerce.product.entity.Producto;
+import com.example.springbootecommerce.product.repository.ProductoRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface CartMapper {
+
     // =========================================================================
     // CONVERSIONES BÁSICAS CATEGORIA -> DTO
     // =========================================================================
@@ -35,4 +40,18 @@ public interface CartMapper {
     @Mapping(source = "producto.stockQuantity", target = "availableStock")
     @Mapping(source = "addedAt", target = "addedAt")
     CartItemDTO toItemDTO(CartItem cartItem);
+
+    // =========================================================================
+    // CONVERSIONES BÁSICAS DTO -> ENTIDAD
+    // =========================================================================
+    /**
+     * Convierte un CartDTO a una entidad Cart.
+     * Esta función es útil para procesos que necesitan trabajar con la entidad.
+     */
+    @Mapping(target = "user", ignore = true) // Se asigna manualmente
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "items", source = "items", qualifiedByName = "itemDTOListToEntityList")
+    @Mapping(target = "updatedAt", source = "updatedAt")
+    public abstract Cart toEntity(CartDTO cartDTO);
+
 }
