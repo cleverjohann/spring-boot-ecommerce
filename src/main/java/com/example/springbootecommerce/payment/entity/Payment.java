@@ -6,6 +6,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -53,6 +56,7 @@ public class Payment extends Auditable {
     @Column(name = "processed_date")
     private LocalDateTime processedDate;
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "gateway_response", columnDefinition = "JSON")
     private String gatewayResponse;
 

@@ -95,11 +95,11 @@ public class PaymentServiceImpl implements PaymentService {
             //Simular respuesta de gateway
             String gatewayResponse = """
                     {
-                        "id" = "%s",
-                        "status" = "succeeded"
-                        "amount" = %s,
-                        "currency" = "usd",
-                        "created" = %s,
+                        "id": "%s",
+                        "status": "succeeded",
+                        "amount": %s,
+                        "currency": "usd",
+                        "created": %s
                     }
                     """.formatted(
                     payment.getGatewayPaymentId(),
@@ -122,7 +122,7 @@ public class PaymentServiceImpl implements PaymentService {
             //TODO: Aquí iria la integración con paypal
 
             payment.setTransactionId("PAY-" + UUID.randomUUID().toString());
-            payment.setGatewayResponse("paypal_"+ System.currentTimeMillis());
+            payment.setGatewayPaymentId("paypal_" + System.currentTimeMillis());
 
             String gatewayResponse = """
                 {
