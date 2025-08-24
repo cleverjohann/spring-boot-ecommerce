@@ -1,5 +1,6 @@
 package com.example.springbootecommerce.user.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -79,6 +80,7 @@ public class CreatedAddressDTO {
     // MÉTODOS DE VALIDACIÓN PERSONALIZADA
     // ========================================================================
 
+    @JsonIgnore
     public boolean isValid() {
         return street != null && !street.isBlank() &&
                city != null && !city.isBlank() &&
@@ -142,6 +144,7 @@ public class CreatedAddressDTO {
         return result.toString();
     }
 
+    @JsonIgnore
     public String getSummary(){
         return String.format("%s, %s, %s, %s, %s",
                 street != null ? street : "N/A",

@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -317,17 +318,10 @@ public class UserServiceImpl implements UserService {
         currentUser.addAddress(newAddress);
         User savedUser = userRepository.save(currentUser);
 
-        // Encontrar la dirección guardada
+        // La nueva dirección es la última añadida a la lista
         Address savedAddress = savedUser.getAddresses().stream()
-                .filter(addr -> addr.getStreet().equals(newAddress.getStreet())&&
-                        addr.getCity().equals(newAddress.getCity()))
-                .findFirst()
-                .orElseThrow(()-> new BusinessException("Error al guardar la dirección"));
-
-        // Usar directamente la nueva dirección, que ahora tiene su ID asignado
-        if (newAddress.getId() == null) {
-            throw new BusinessException("Error al guardar la dirección");
-        }
+                .max(Comparator.comparing(Address::getId))
+                .orElseThrow(() -> new BusinessException("Error al guardar la dirección: no se pudo obtener la dirección guardada."));
 
         AddressDTO result = addressMapper.toAddressDTO(savedAddress);
 
