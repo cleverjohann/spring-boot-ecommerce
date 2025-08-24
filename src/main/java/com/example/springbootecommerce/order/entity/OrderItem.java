@@ -56,6 +56,9 @@ public class OrderItem {
         this.order = order;
         this.producto = producto;
         this.quantity = quantity;
+        this.productoName = producto.getName();
+        this.productoSku = producto.getSku();
+        this.priceAtPurchase = producto.getPrice();
     }
 
     public BigDecimal calculateSubtotal(){

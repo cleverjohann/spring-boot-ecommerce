@@ -537,7 +537,7 @@ public class OrderServiceImpl implements OrderService {
         order.setUser(user);
         order.setTotalAmount(cart.getTotalMount());
 
-        order.setShippingState(shippingAddress.getStreet());
+        order.setShippingStreet(shippingAddress.getStreet());
         order.setShippingCity(shippingAddress.getCity());
         order.setShippingState(shippingAddress.getState());
         order.setShippingPostalCode(shippingAddress.getPostalCode());
