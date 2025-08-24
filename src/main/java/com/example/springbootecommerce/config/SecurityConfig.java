@@ -123,7 +123,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/products").permitAll() // Listar productos
                         .requestMatchers("/api/v1/products/{id}").permitAll() // Ver producto específico
                         .requestMatchers("/api/v1/products/search").permitAll() // Buscar productos
-                        .requestMatchers("/api/v1/products/category/**").permitAll() // Por categoría
+                        .requestMatchers("/api/v1/products/categoria/**").permitAll() // Por categoría
                         .requestMatchers("/api/v1/products/admin/**").hasRole("ADMIN") // Gestión de productos
 
                         // Endpoints de categorías - acceso mixto
