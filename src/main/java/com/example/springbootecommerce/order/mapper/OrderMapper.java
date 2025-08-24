@@ -30,7 +30,7 @@ public interface OrderMapper {
     @Mapping(target = "totalItems", expression = "java(order.getTotalItems())")
     OrderSummaryDTO toSummaryDTO(Order order);
 
-    @Mapping(target = "productId", source = "producto.id")
+    @Mapping(target = "productoId", source = "producto.id")
     OrderItemDTO toItemDTO(OrderItem item);
 
     @Mapping(target = "status", expression = "java(payment.getStatus().getDisplayName())")

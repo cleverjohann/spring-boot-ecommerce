@@ -4,15 +4,16 @@ import com.example.springbootecommerce.shared.audit.Auditable;
 import com.example.springbootecommerce.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-@Builder
 @Data
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 @Entity
+@SuperBuilder
 @Table(name = "carts")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,11 +30,6 @@ public class Cart extends Auditable {
     @OneToMany(mappedBy = "cart",cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @Builder.Default
     private List<CartItem> items = new ArrayList<>();
-
-    public Cart(User user){
-        this.user = user;
-        this.items = new ArrayList<>();
-    }
 
     // ========================================================================
     // MÉTODOS DE NEGOCIO

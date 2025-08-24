@@ -7,6 +7,7 @@ import com.example.springbootecommerce.order.service.OrderService;
 import com.example.springbootecommerce.shared.dto.ApiResponse;
 import com.example.springbootecommerce.shared.dto.PageResponse;
 import com.example.springbootecommerce.user.entity.User;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +36,7 @@ import static com.example.springbootecommerce.shared.util.Constants.ORDERS_ENDPO
 @RestController
 @RequestMapping(ORDERS_ENDPOINT)
 @RequiredArgsConstructor
-
+@Tag(name = "Orden", description = "API para gestion de ordenes")
 public class OrderController {
 
     private final OrderService orderService;

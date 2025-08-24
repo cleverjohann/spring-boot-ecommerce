@@ -6,6 +6,7 @@ import com.example.springbootecommerce.cart.dto.UpdateItemDTO;
 import com.example.springbootecommerce.cart.service.CartService;
 import com.example.springbootecommerce.shared.dto.ApiResponse;
 import com.example.springbootecommerce.user.entity.User;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ import static com.example.springbootecommerce.shared.util.Constants.CART_ENDPOIN
 @RequestMapping(CART_ENDPOINT)
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('USER')")
+@Tag(name = "Carrito", description = "API para gestion de carritos")
 public class CartController {
 
     private final CartService cartService;
