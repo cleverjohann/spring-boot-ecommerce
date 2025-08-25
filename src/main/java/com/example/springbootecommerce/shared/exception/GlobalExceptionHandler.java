@@ -229,25 +229,23 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Maneja errores de autorización
+     * Maneja errores de acceso denegado (autorización) para respetar la lógica de CustomAccessDeniedHandler
      */
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDeniedException(
             AccessDeniedException ex,
             WebRequest request
-    ){
-        log.warn("Access denied: {}", ex.getMessage());
+    ) {
+        log.warn("Access denied for path: {} - {}", getPath(request), ex.getMessage());
 
         ErrorResponse errorResponse = new ErrorResponse(
                 "ACCESS_DENIED",
-                "Access denied",
+                "No tienes permisos suficientes para acceder a este recurso",
                 HttpStatus.FORBIDDEN.value(),
                 getPath(request)
         );
-        return new ResponseEntity<>(
-                errorResponse,
-                HttpStatus.FORBIDDEN
-        );
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 
     /**
@@ -339,4 +337,6 @@ public class GlobalExceptionHandler {
                         propertyPath.lastIndexOf('.') + 1) :
                 propertyPath;
     }
+
+
 }

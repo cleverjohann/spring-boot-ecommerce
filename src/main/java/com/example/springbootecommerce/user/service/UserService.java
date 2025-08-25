@@ -14,7 +14,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 /**
- * Interfaz del servicio de usuarios que define las operaciones de negocio.
+ * Interfaz del servicio de usuarios que define las operaciones de negocio
  * Sigue el principio de segregación de interfaces (ISP) y abstracción.
  */
 public interface UserService {
@@ -68,10 +68,9 @@ public interface UserService {
      *
      * @param currentPassword Contraseña actual
      * @param newPassword     Nueva contraseña
-     * @return true si se cambió correctamente
      * @throws BusinessException si la contraseña actual es incorrecta
      */
-    boolean changePassword(String currentPassword, String newPassword);
+    void changePassword(String currentPassword, String newPassword);
 
     // ========================================================================
     // OPERACIONES ADMINISTRATIVAS
@@ -81,18 +80,9 @@ public interface UserService {
      * Obtiene todos los usuarios activos con paginación.
      *
      * @param pageable Configuración de paginación
-     * @return Página de usuarios
+     * @return Página de usuarios con el dto. Personalizado summary
      */
-    PageResponse<UserDTO> getAllUsers(Pageable pageable);
-
-    /**
-     * Busca usuarios por nombre, email u otros criterios usando especificaciones.
-     *
-     * @param search   Término de búsqueda
-     * @param pageable Configuración de paginación
-     * @return Página de usuarios que coinciden con la búsqueda
-     */
-    PageResponse<UserDTO> searchUsers(String search, Pageable pageable);
+    public PageResponse<UserDTO.UserSummaryDTO> getAllUsersAndSearchUsers(String search, Pageable pageable);
 
     /**
      * Activa un usuario (solo administradores)
@@ -145,7 +135,7 @@ public interface UserService {
     /**
      * Actualiza una dirección existente del usuario actual
      *
-     * @param addressId         ID de la dirección
+     * @param addressId ID de la dirección
      * @param updatedAddressDTO Datos actualizados
      * @return AddressDTO actualizada
      * @throws ResourceNotFoundException      si la dirección no existe
@@ -188,7 +178,7 @@ public interface UserService {
     /**
      * Verifica si un email ya está en uso (excluyendo un usuario específico)
      *
-     * @param email         Email a verificar
+     * @param email Email a verificar
      * @param excludeUserId ID del usuario a excluir de la verificación
      * @return true si el email está disponible
      */
@@ -241,7 +231,7 @@ public interface UserService {
     /**
      * Obtiene estadísticas generales de usuarios
      *
-     * @return Mapa con estadísticas (total usuarios, activos, por rol, etc.)
+     * @return Mapa con estadísticas (total usuario, activos, por rol, etc.)
      */
     UserStatistics getUserStatistics();
 

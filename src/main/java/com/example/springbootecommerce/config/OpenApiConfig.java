@@ -1,6 +1,8 @@
 package com.example.springbootecommerce.config;
 
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
@@ -21,20 +23,35 @@ import java.util.List;
 @SecurityScheme(
         name = "bearerAuth",
         type = SecuritySchemeType.HTTP,
-        bearerFormat = "JWT",
-        scheme = "bearer"
+        scheme = "bearer",
+        bearerFormat = "JWT"
 )
 public class OpenApiConfig {
 
     @Value("${spring.application.name}")
     private String applicationName;
 
+    @Value("${server.port:8080}")
+    private String serverPort;
+
+
     @Bean
-    public OpenAPI customOpenAPI(){
+    public OpenAPI customOpenAPI(@Value("${app.description:API de ejemplo}") String appDesciption) {
         return new OpenAPI()
-                .info(apiInfo())
-                .servers(apiServers());
+                .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
+                .components(new Components())
+                .info(new Info()
+                        .title("Spring Boot Ecommerce API")
+                        .version("1.0")
+                        .description(appDesciption)
+                        .contact(new Contact().name("Soporte").email("soporte@mi-ecommerce.com"))
+                        .license(new License().name("MIT").url("https://opensource.org/licenses/MIT"))
+                )
+                .servers(List.of(
+                        new Server().url("http://localhost:8080").description("Servidor local")
+                ));
     }
+
 
     private Info apiInfo(){
         return new Info()

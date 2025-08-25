@@ -1,5 +1,6 @@
 package com.example.springbootecommerce.shared.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,6 +23,7 @@ public class ErrorResponse {
     private String message;
     private int status;
     private String path;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timestamp;
     private List<ValidationError> validationErrors;
 

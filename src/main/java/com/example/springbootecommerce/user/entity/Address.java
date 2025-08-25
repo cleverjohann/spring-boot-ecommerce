@@ -123,4 +123,11 @@ public class Address extends Auditable {
         }
     }
 
+    public boolean isComplete() {
+        return street != null && !street.isBlank() &&
+               city != null && !city.isBlank() &&
+               state != null && !state.isBlank() &&
+               postalCode != null && !postalCode.isBlank() &&
+               country != null && !country.isBlank();
+    }
 }

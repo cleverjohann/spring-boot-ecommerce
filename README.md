@@ -28,7 +28,6 @@ Una plataforma de e-commerce moderna construida con Spring Boot 3, siguiendo las
 * **Spring Security**: Para autenticación y autorización.
 * **Spring Data JPA**: Capa de persistencia de datos.
 * **PostgreSQL**: Base de datos principal para producción.
-* **H2**: Base de datos en memoria para desarrollo y pruebas.
 
 ### Herramientas y Librerías
 * **MapStruct**: Mapeo automático y eficiente entre DTOs y entidades.

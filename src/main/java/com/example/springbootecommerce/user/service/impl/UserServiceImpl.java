@@ -16,9 +16,12 @@ import com.example.springbootecommerce.user.mapper.AddressMapper;
 import com.example.springbootecommerce.user.mapper.UserMapper;
 import com.example.springbootecommerce.user.repository.UserRepository;
 import com.example.springbootecommerce.user.service.UserService;
+import com.example.springbootecommerce.user.repository.specification.UserSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -149,7 +153,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public boolean changePassword(String currentPassword, String newPassword) {
+    public void changePassword(String currentPassword, String newPassword) {
         log.info("Cambio de contraseña del usuario actual");
 
         User currentUser = getCurrentUserEntity();
@@ -173,7 +177,6 @@ public class UserServiceImpl implements UserService {
         userRepository.save(currentUser);
 
         log.info("Contraseña cambiada exitosamente para usuario: {}", currentUser.getEmail());
-        return true;
     }
 
     // ========================================================================
@@ -181,14 +184,37 @@ public class UserServiceImpl implements UserService {
     // ========================================================================
 
     @Override
-    public PageResponse<UserDTO> getAllUsers(Pageable pageable) {
-        return null;
+    public PageResponse<UserDTO.UserSummaryDTO> getAllUsersAndSearchUsers(String search, Pageable pageable) {
+        log.debug("Buscando usuarios (resumen) con término: '{}' y paginación: {}", search, pageable);
+
+        verifyAdminPermissions();
+
+        Specification<User> spec = UserSpecification.isActive();
+        if (search != null && !search.trim().isEmpty()) {
+            spec = spec.and(UserSpecification.nameContains(search.trim()));
+        }
+
+        Page<User> userPage = userRepository.findAll(spec, pageable);
+        List<UserDTO.UserSummaryDTO> userSummaries = userPage.getContent()
+                .stream()
+                .map(userMapper::toUserSummaryDTO)
+                .toList();
+
+        PageResponse<UserDTO.UserSummaryDTO> response = new PageResponse<>(
+                userSummaries,
+                userPage.getNumber(),
+                userPage.getSize(),
+                userPage.getTotalElements(),
+                userPage.getTotalPages(),
+                userPage.isFirst(),
+                userPage.isLast(),
+                userPage.isEmpty()
+        );
+
+        log.debug("Búsqueda de usuarios (resumen) completada: {} encontrados", userPage.getTotalElements());
+        return response;
     }
 
-    @Override
-    public PageResponse<UserDTO> searchUsers(String search, Pageable pageable) {
-        return null;
-    }
 
     @Override
     @Transactional
@@ -228,7 +254,7 @@ public class UserServiceImpl implements UserService {
         user.setIsActive(false);
         User savedUser = userRepository.save(user);
 
-        log.info("Usuario desactivado exitosamente : {}", user.getEmail());
+        log.info("Usuario desactivado exitosamente por el Admin : {}", user.getEmail());
         return userMapper.toUserDTO(savedUser);
     }
 
@@ -292,17 +318,10 @@ public class UserServiceImpl implements UserService {
         currentUser.addAddress(newAddress);
         User savedUser = userRepository.save(currentUser);
 
-        // Encontrar la dirección guardada
+        // La nueva dirección es la última añadida a la lista
         Address savedAddress = savedUser.getAddresses().stream()
-                .filter(addr -> addr.getStreet().equals(newAddress.getStreet())&&
-                        addr.getCity().equals(newAddress.getCity()))
-                .findFirst()
-                .orElseThrow(()-> new BusinessException("Error al guardar la dirección"));
-
-        // Usar directamente la nueva dirección, que ahora tiene su ID asignado
-        if (newAddress.getId() == null) {
-            throw new BusinessException("Error al guardar la dirección");
-        }
+                .max(Comparator.comparing(Address::getId))
+                .orElseThrow(() -> new BusinessException("Error al guardar la dirección: no se pudo obtener la dirección guardada."));
 
         AddressDTO result = addressMapper.toAddressDTO(savedAddress);
 

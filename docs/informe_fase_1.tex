@@ -1,0 +1,387 @@
+\documentclass[12pt, a4paper]{article}
+
+% Preamble: Paquetes y configuración
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+
+% Configuración de márgenes
+\geometry{a4paper, margin=2.5cm}
+
+% Configuración de Hyperref
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    pdftitle={Informe de Avance: Fase 1 - Backend E-commerce},
+    pdfpagemode=FullScreen,
+}
+
+% Estilos personalizados para los listados de código
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{javastyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize\ttfamily,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    language=Java
+}
+
+\lstdefinestyle{xmlstyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize\ttfamily,
+    breaklines=true,
+    numbers=left,
+    numbersep=5pt,
+    language=XML
+}
+
+\lstdefinestyle{yamlstyle}{
+    backgroundcolor=\color{backcolour},
+    keywordstyle=\color{blue},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize\ttfamily,
+    breaklines=true,
+    numbers=left,
+    numbersep=5pt,
+    language=YAML
+}
+
+% Datos del documento para la página de título
+\title{
+    \Huge\textbf{Informe de Avance: Fase 1 - Backend E-commerce} \\
+    \vspace{0.5cm}
+    \large\textit{Arquitectura y Desarrollo Inicial con Spring Boot}
+}
+\author{Equipo de Desarrollo Backend}
+\date{\today}
+
+% Inicio del documento
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+\newpage
+
+% Resumen Ejecutivo
+\begin{abstract}
+\noindent
+Este informe detalla los avances logrados durante la Fase 1 del proyecto de desarrollo de la plataforma de e-commerce. El objetivo principal de esta fase fue establecer una arquitectura de software robusta y escalable utilizando Spring Boot. Se ha definido el modelo de datos inicial a través de entidades JPA, y se han implementado las capas fundamentales de la aplicación: controladores para la exposición de una API REST, servicios para la lógica de negocio y repositorios para la persistencia de datos. Al concluir esta fase, el proyecto cuenta con una base sólida que permite realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) sobre las entidades principales como Productos, Categorías y Usuarios, sentando las bases para futuras funcionalidades.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+% Secciones del informe
+\section{Introducción}
+El objetivo de este proyecto es desarrollar una plataforma de e-commerce moderna, robusta y escalable que sirva como núcleo para un negocio en línea. La Fase 1 se ha centrado en la creación del esqueleto del backend, garantizando que las prácticas de desarrollo y la arquitectura elegida soporten el crecimiento futuro.
+
+El stack tecnológico seleccionado para el backend es:
+\begin{itemize}
+    \item \textbf{Lenguaje:} Java 17
+    \item \textbf{Framework:} Spring Boot 3
+    \item \textbf{Persistencia de Datos:} Spring Data JPA con Hibernate
+    \item \textbf{Base de Datos:} PostgreSQL (configurable para MySQL)
+    \item \textbf{Gestión de Dependencias:} Maven
+\end{itemize}
+
+\section{Arquitectura del Proyecto}
+La arquitectura sigue un patrón en capas (layered architecture), que es un estándar en aplicaciones empresariales con Spring Boot. Esto promueve la separación de responsabilidades y la mantenibilidad del código.
+
+\subsection{Estructura del Proyecto}
+El proyecto se organiza siguiendo la estructura estándar de Maven, facilitando la navegación y el desarrollo:
+\begin{verbatim}
+src
+|-- main
+|   |-- java
+|   |   `-- com/example/springbootecommerce
+|   |       |-- controller
+|   |       |-- service
+|   |       |-- repository
+|   |       |-- entity (model)
+|   |       `-- dto
+|   `-- resources
+|       |-- static
+|       |-- templates
+|       `-- application.yml
+`-- test
+    `-- java
+\end{verbatim}
+
+\subsection{Dependencias Clave}
+El archivo `pom.xml` define las dependencias esenciales que conforman el núcleo de la aplicación.
+\begin{lstlisting}[style=xmlstyle, caption={Fragmento de dependencias en `pom.xml`}, label=lst:pom]
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <scope>runtime</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <optional>true</optional>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+\end{lstlisting}
+
+\section{Modelo de Datos (Entidades JPA)}
+El modelo de datos se ha definido utilizando entidades JPA (Java Persistence API). Estas clases representan las tablas en la base de datos y son la base sobre la que opera el resto de la aplicación.
+
+\begin{lstlisting}[style=javastyle, caption={Entidad `User`}, label=lst:user]
+@Entity @Data @Table(name = "users")
+public class User {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String username;
+    private String password;
+    private String email;
+    private String role; // Ej. "ROLE_USER", "ROLE_ADMIN"
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=javastyle, caption={Entidad `Category`}, label=lst:category]
+@Entity @Data
+public class Category {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=javastyle, caption={Entidad `Product`}, label=lst:product]
+@Entity @Data
+public class Product {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
+    private String description;
+    private Double price;
+    private Integer stock;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=javastyle, caption={Entidad `Order`}, label=lst:order]
+@Entity @Data @Table(name = "orders")
+public class Order {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private LocalDateTime orderDate;
+    private String status; // Ej. "PENDING", "COMPLETED"
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderItem> items;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=javastyle, caption={Entidad `OrderItem`}, label=lst:orderitem]
+@Entity @Data
+public class OrderItem {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private Integer quantity;
+    private Double price; // Precio al momento de la compra
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Order order;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product;
+}
+\end{lstlisting}
+
+\section{Capa de Acceso a Datos (Repositorios)}
+La capa de acceso a datos se implementa utilizando la interfaz `JpaRepository` de Spring Data JPA. Esto nos permite tener métodos CRUD y de búsqueda listos para usar sin necesidad de escribir implementaciones concretas.
+
+\begin{lstlisting}[style=javastyle, caption={Interfaz `ProductRepository`}, label=lst:productrepo]
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface ProductRepository extends JpaRepository<Product, Long> {
+    // Métodos de búsqueda personalizados pueden ser añadidos aquí
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=javastyle, caption={Interfaz `UserRepository`}, label=lst:userrepo]
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import java.util.Optional;
+
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByUsername(String username);
+}
+\end{lstlisting}
+
+\section{Capa de Lógica de Negocio (Servicios)}
+Esta capa contiene la lógica de negocio principal. Los servicios son inyectados en los controladores y utilizan los repositorios para interactuar con la base de datos.
+
+\begin{lstlisting}[style=javastyle, caption={Interfaz `ProductService`}, label=lst:productservice]
+import java.util.List;
+import java.util.Optional;
+
+public interface ProductService {
+    List<Product> findAllProducts();
+    Optional<Product> findProductById(Long id);
+    Product saveProduct(Product product);
+    void deleteProduct(Long id);
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=javastyle, caption={Implementación `ProductServiceImpl`}, label=lst:productserviceimpl]
+@Service
+public class ProductServiceImpl implements ProductService {
+
+    private final ProductRepository productRepository;
+
+    @Autowired
+    public ProductServiceImpl(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
+
+    @Override
+    public List<Product> findAllProducts() {
+        return productRepository.findAll();
+    }
+
+    @Override
+    public Optional<Product> findProductById(Long id) {
+        return productRepository.findById(id);
+    }
+
+    @Override
+    public Product saveProduct(Product product) {
+        return productRepository.save(product);
+    }
+
+    @Override
+    public void deleteProduct(Long id) {
+        productRepository.deleteById(id);
+    }
+}
+\end{lstlisting}
+
+\section{Capa de Presentación (Controladores REST)}
+Los controladores exponen la funcionalidad de la aplicación a través de una API REST. Gestionan las solicitudes HTTP, las validan y delegan la lógica a la capa de servicio.
+
+\begin{lstlisting}[style=javastyle, caption={Controlador `ProductController`}, label=lst:productcontroller]
+@RestController
+@RequestMapping("/api/products")
+public class ProductController {
+
+    private final ProductService productService;
+
+    @Autowired
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Product>> getAllProducts() {
+        return ResponseEntity.ok(productService.findAllProducts());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+        return productService.findProductById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+        Product savedProduct = productService.saveProduct(product);
+        return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
+    }
+}
+\end{lstlisting}
+
+\section{Configuración del Proyecto}
+La configuración centralizada se gestiona en el archivo `application.yml`. Aquí se definen parámetros como el puerto del servidor y la conexión a la base de datos.
+
+\begin{lstlisting}[style=yamlstyle, caption={Configuración en `application.yml`}, label=lst:appyaml]
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ecommerce_db
+    username: your_username
+    password: your_password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update # En desarrollo; usar flyway/liquibase en producción
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+\end{lstlisting}
+
+\section{Conclusiones y Próximos Pasos}
+La Fase 1 ha concluido con éxito. Se ha establecido una base de código sólida, bien estructurada y funcional para las operaciones básicas del e-commerce. La arquitectura en capas y el uso de Spring Boot nos proporcionan una plataforma robusta sobre la cual construir funcionalidades más complejas.
+
+Los objetivos para la **Fase 2** son:
+\begin{itemize}
+    \item \textbf{Seguridad:} Implementar autenticación y autorización utilizando Spring Security y JSON Web Tokens (JWT).
+    \item \textbf{Endpoints Avanzados:} Desarrollar endpoints que soporten paginación y filtros dinámicos para las listas de productos y pedidos.
+    \item \textbf{Proceso de Compra:} Implementar la lógica de negocio para crear pedidos, gestionar el carrito de compras y actualizar el stock.
+    \item \textbf{Pruebas:} Aumentar la cobertura de pruebas con tests unitarios para los servicios y tests de integración para los controladores.
+\end{itemize}
+
+\end{document}
