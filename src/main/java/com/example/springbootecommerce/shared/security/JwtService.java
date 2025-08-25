@@ -323,4 +323,8 @@ public class JwtService {
             return "Token{invalid or malformed}";
         }
     }
+
+    public Claims parseClaims(String token) {
+        return extractAllClaims(token);
+    }
 }

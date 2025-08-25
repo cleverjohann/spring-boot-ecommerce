@@ -2,6 +2,7 @@ package com.example.springbootecommerce.shared.security;
 
 import com.example.springbootecommerce.auth.service.TokenBlacklistService;
 import com.example.springbootecommerce.shared.util.Constants;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -47,71 +48,68 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-        if (log.isTraceEnabled()) {
-            log.trace("Procesando request {} {}", request.getMethod(), request.getRequestURI());
-        }
-
         final String authHeader = request.getHeader(Constants.AUTHORIZATION_HEADER);
 
         if (authHeader == null || !authHeader.startsWith(Constants.BEARER_TOKEN_PREFIX)) {
-            log.trace("No se encontró token JWT válido en el header");
             filterChain.doFilter(request, response);
             return;
         }
 
+        final String jwt = authHeader.substring(Constants.BEARER_TOKEN_PREFIX.length()).trim();
+
+        if (jwt.isEmpty()) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        if (tokenBlacklistService.isTokenBlacklisted(jwt)) {
+            handleJwtException(response, "Token invalidado", HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
         try {
-            final String jwt = authHeader.substring(Constants.BEARER_TOKEN_PREFIX.length()).trim();
+            // Analizar el token UNA SOLA VEZ
+            Claims claims = jwtService.parseClaims(jwt);
 
-            if (jwt.isEmpty()) {
-                log.debug("Token JWT vacío");
-                filterChain.doFilter(request, response);
-                return;
-            }
-
-            if (tokenBlacklistService.isTokenBlacklisted(jwt)) {
-                log.debug("Token JWT está en la lista negra");
-                handleJwtException(response, "Token invalidado", HttpServletResponse.SC_UNAUTHORIZED);
-                return;
-            }
-
-            final String userEmail = jwtService.extractUsername(jwt);
+            String userEmail = claims.getSubject();
+            Long userId = claims.get("userId", Long.class);
+            String roles = claims.get("roles", String.class);
 
             if (userEmail == null) {
-                log.debug("No se pudo extraer username del token");
                 filterChain.doFilter(request, response);
                 return;
             }
 
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
-                processTokenAuthentication(request, jwt, userEmail);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
+
+                if (jwtService.isTokenValid(jwt, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities());
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
             }
 
-            if (log.isDebugEnabled()) {
-                logTokenInformation(jwt);
-            }
+            // Log opcional usando los claims ya extraídos
+            log.debug("Token - UserId: {}, Roles: {}", userId, roles);
 
         } catch (ExpiredJwtException e) {
-            log.debug("Token JWT expirado: {} {}", request.getMethod(), request.getRequestURI());
             handleJwtException(response, "Token expirado", HttpServletResponse.SC_UNAUTHORIZED);
             return;
         } catch (UnsupportedJwtException e) {
-            log.warn("Token JWT no soportado: {}", e.getMessage());
             handleJwtException(response, "Token no soportado", HttpServletResponse.SC_BAD_REQUEST);
             return;
         } catch (MalformedJwtException e) {
-            log.warn("Token JWT malformado: {}", e.getMessage());
             handleJwtException(response, "Token malformado", HttpServletResponse.SC_BAD_REQUEST);
             return;
         } catch (SecurityException e) {
-            log.warn("Error de seguridad en token: {}", e.getMessage());
             handleJwtException(response, "Token inválido", HttpServletResponse.SC_UNAUTHORIZED);
             return;
         } catch (IllegalArgumentException e) {
-            log.warn("Token JWT inválido: {}", e.getMessage());
             handleJwtException(response, "Token JWT inválido", HttpServletResponse.SC_BAD_REQUEST);
             return;
         } catch (Exception e) {
-            log.error("Error inesperado procesando JWT: {}", e.getMessage(), e);
             handleJwtException(response, "Error interno", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return;
         }
