@@ -18,6 +18,10 @@ import org.springframework.web.bind.annotation.*;
 
 import static com.example.springbootecommerce.shared.util.Constants.CART_ENDPOINT;
 
+/**
+ * Controlador REST para la gestión del carrito de compras.
+ * Este controlador permite a los usuarios autenticados ver su carrito, agregar, actualizar y eliminar artículos, y validar el stock.
+ */
 @Slf4j
 @RestController
 @RequestMapping(CART_ENDPOINT)

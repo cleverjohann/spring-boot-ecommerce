@@ -27,6 +27,7 @@ import java.util.Map;
 
 /**
  * Controlador REST para operaciones de autenticación y autorización.
+ * Este controlador maneja el registro, inicio de sesión, cierre de sesión, actualización de tokens y restablecimiento de contraseñas.
  */
 @RestController
 @RequestMapping("/api/v1/auth")

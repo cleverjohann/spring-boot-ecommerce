@@ -18,6 +18,10 @@ import java.util.List;
 
 import static com.example.springbootecommerce.shared.util.Constants.CATEGORIES_ENDPOINT;
 
+/**
+ * Controlador REST para la gestión de categorías de productos.
+ * Proporciona endpoints para operaciones CRUD de categorías, así como para obtener la jerarquía de categorías.
+ */
 @Slf4j
 @RestController
 @RequestMapping(CATEGORIES_ENDPOINT)

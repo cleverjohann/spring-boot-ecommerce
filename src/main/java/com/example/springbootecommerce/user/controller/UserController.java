@@ -28,6 +28,7 @@ import static com.example.springbootecommerce.shared.util.Constants.USERS_ENDPOI
  * Controlador REST para la gestión de usuarios.
  * Proporciona endpoints para operaciones CRUD de usuarios,
  * gestión de perfiles, direcciones y operaciones administrativas.
+ * Este controlador permite a los usuarios gestionar su propia información y a los administradores gestionar todos los usuarios.
  */
 
 @RestController

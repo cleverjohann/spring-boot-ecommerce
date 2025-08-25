@@ -19,6 +19,10 @@ import java.util.List;
 
 import static com.example.springbootecommerce.shared.util.Constants.PRODUCTS_ENDPOINT;
 
+/**
+ * Controlador REST para la gestión de productos.
+ * Proporciona endpoints para buscar, ver, crear, actualizar y eliminar productos, así como para gestionar el stock.
+ */
 @RestController
 @RequestMapping(PRODUCTS_ENDPOINT)
 @RequiredArgsConstructor

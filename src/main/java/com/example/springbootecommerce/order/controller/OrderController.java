@@ -29,8 +29,8 @@ import java.util.List;
 import static com.example.springbootecommerce.shared.util.Constants.ORDERS_ENDPOINT;
 
 /**
- * Controlador REST para la gestión completa de órdenes
- * Maneja endpoints para usuarios autenticados, invitados y administradores
+ * Controlador REST para la gestión completa de órdenes.
+ * Maneja endpoints para usuarios autenticados, invitados y administradores, permitiendo la creación, consulta y gestión de órdenes.
  */
 @Slf4j
 @RestController
